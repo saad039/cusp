@@ -13,15 +13,10 @@ project "spdlog"
     location "spdlog"
     kind "Staticlib"
     language"C++"
-
+    toolset("clang")
     targetdir ("../bin/%{prj.name}/")
     objdir("../bin-init/%{prj.name}/")
     flags { cppdialect "C++17" }
-
-    files{
-        "../dependencies/spdlog/include/**.h",
-        "../dependencies/spdlog/src/**.cpp",        
-    }
 
     defines{
         "SPDLOG_COMPILED_LIB"
@@ -31,7 +26,6 @@ project "spdlog"
         "../dependencies/spdlog/include"
     }
 
-    toolset("clang")
     filter "configurations:Debug"
       defines { "DEBUG" }
       symbols "On"
@@ -47,7 +41,8 @@ project "spdlog"
     language "C++"
 	cppdialect "C++17"
     staticruntime "on"
-    
+    toolset("clang")
+
 
     targetdir ("../bin/%{prj.name}/")
     objdir("../bin-init/%{prj.name}/")
@@ -65,7 +60,6 @@ project "spdlog"
         "spdlog"
     }
   
-    toolset("clang")
     filter "configurations:Debug"
       defines { "DEBUG" }
       symbols "On"

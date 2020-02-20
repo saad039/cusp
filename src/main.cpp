@@ -13,7 +13,7 @@ int main()
     spdlog::info("{:<30}", "left aligned");
     
     spdlog::set_level(spdlog::level::debug); // Set global log level to debug
-    spdlog::debug("This message should be displayed..");    
+    spdlog::debug("This messages should be displayed..");    
     
     // change log pattern
     spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
@@ -21,9 +21,9 @@ int main()
     // Compile time log levels
     // define SPDLOG_ACTIVE_LEVEL to desired level
     SPDLOG_TRACE("Some trace message with param {}", 42);
-    SPDLOG_DEBUG("Some debug message");
+    SPDLOG_DEBUG("Some debugging message");
     
     // Set the default logger to file logger
-    auto file_logger = spdlog::basic_logger_mt("basic_logger", "logs/basic.txt");
-    spdlog::set_default_logger(file_logger);            
+    // auto file_logger = spdlog::basic_logger_mt("basic_logger", "logs/basic.txt");
+    // spdlog::set_default_logger(file_logger);            
 }
