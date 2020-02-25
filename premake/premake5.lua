@@ -13,10 +13,9 @@ project "spdlog"
     location "spdlog"
     kind "Staticlib"
     language"C++"
-    toolset("clang")
+    toolset "gcc"
     cppdialect "C++17"
     staticruntime "on"
-    toolset("clang")
 
 
     targetdir ("../bin/%{prj.name}/")
@@ -36,6 +35,8 @@ project "spdlog"
         "../dependencies/spdlog/include"
     }
 
+    
+
     filter "configurations:Debug"
         defines { "DEBUG" }
         runtime "Debug"
@@ -53,10 +54,10 @@ project "cusp"
     location "cusp"
     kind "ConsoleApp"
     language "C++"
-	cppdialect "C++17"
+    toolset "gcc"
+    cppdialect "C++17"
     staticruntime "on"
-    toolset("clang")
-
+    
     targetdir ("../bin/%{prj.name}/")
     objdir("../bin-init/%{prj.name}/")
 
@@ -65,12 +66,14 @@ project "cusp"
 		"../src/**.cpp"
     }
 
-    pchheader "../src/cusppch.h"
-    pchsource "../src/cusppch.cpp"
 
     includedirs{
         "../dependencies/spdlog/include"
     }
+
+    pchheader "../src/cusppch.h"
+    pchsource "../src/cusppch.cpp"
+
     links{
         "spdlog"
     }
