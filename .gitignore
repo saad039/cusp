@@ -1,7 +1,5 @@
 bin/**
 bin-init/**
-premake/cusp/**
-premake/spdlog/**
-premake/spdlog.make
-premake/premake5
-premake/premake5.exe
+dependencies/spdlog/Makefile
+cusp/Makefile
+Makefile

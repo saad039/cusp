@@ -11,7 +11,7 @@ workspace "cusp"
 
 project "spdlog"
     
-    location "dependencies/spdlog"
+    location "build/spdlog"
     kind "Staticlib"
     language"C++"
     toolset "gcc"
@@ -52,7 +52,7 @@ project "spdlog"
     
     
 project "cusp"
-    location "cusp"
+    location "build/cusp"
     kind "ConsoleApp"
     language "C++"
     toolset "gcc"
