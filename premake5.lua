@@ -1,6 +1,7 @@
 workspace "cusp"
 
     startproject "cusp"
+    architecture "x86_64"
 
     configurations{
         "Debug",
@@ -10,7 +11,7 @@ workspace "cusp"
 
 project "spdlog"
     
-    location "spdlog"
+    location "dependencies/spdlog"
     kind "Staticlib"
     language"C++"
     toolset "gcc"
@@ -18,8 +19,8 @@ project "spdlog"
     staticruntime "on"
 
 
-    targetdir ("../bin/%{prj.name}/")
-    objdir("../bin-init/%{prj.name}/")
+    targetdir ("bin/%{prj.name}")
+    objdir("bin-init/%{prj.name}")
      
 
     defines{
@@ -27,12 +28,12 @@ project "spdlog"
     }
 
     files{
-        "../dependencies/spdlog/include/**.h",
-        "../dependencies/spdlog/src/**.cpp"
+        "dependencies/spdlog/include/**.h",
+        "dependencies/spdlog/src/**.cpp"
     }
     
     includedirs{
-        "../dependencies/spdlog/include"
+        "dependencies/spdlog/include"
     }
 
     
@@ -58,21 +59,22 @@ project "cusp"
     cppdialect "C++17"
     staticruntime "on"
     
-    targetdir ("../bin/%{prj.name}/")
-    objdir("../bin-init/%{prj.name}/")
+    targetdir ("bin/%{prj.name}")
+    objdir("bin-init/%{prj.name}")
 
     files{
-		"../src/**.h",
-		"../src/**.cpp"
+		"cusp/src/**.cpp",
+        "cusp/include/**.h"
     }
 
 
     includedirs{
-        "../dependencies/spdlog/include"
+        "dependencies/spdlog/include",
+        "cusp/include"
     }
 
-    pchheader "../src/cusppch.h"
-    pchsource "../src/cusppch.cpp"
+    pchheader "cusppch.h"
+    pchsource "cusp/src/cusppch.cpp"
 
     links{
         "spdlog"
