@@ -3,3 +3,4 @@ bin-init/**
 dependencies/spdlog/Makefile
 cusp/Makefile
 Makefile
+.vscode/**
