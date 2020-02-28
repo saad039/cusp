@@ -49,6 +49,38 @@ project "spdlog"
         runtime "Release"     
         optimize "On"
 
+project "json"
+    
+    location "build/json"
+    kind "Sharedlib"
+    language"C++"
+    toolset "gcc"
+    cppdialect "C++17"
+    staticruntime "on"
+
+
+    targetdir ("bin/%{prj.name}")
+    objdir("bin-init/%{prj.name}")
+     
+
+    files{
+        "dependencies/json/single_include/nlohmann"
+    }
+    
+    includedirs{
+        "dependencies/json/single_include/nlohmann",
+    }
+
+    filter "configurations:Debug"
+        defines { "DEBUG" }
+        runtime "Debug"
+        symbols "on"
+      
+  
+   filter "configurations:Release"
+        defines { "NDEBUG" }
+        runtime "Release"     
+        optimize "On"
     
     
 project "cusp"
@@ -63,6 +95,7 @@ project "cusp"
     objdir("bin-init/%{prj.name}")
 
     files{
+        
 		"cusp/src/**.cpp",
         "cusp/include/**.h"
     }
@@ -70,6 +103,7 @@ project "cusp"
 
     includedirs{
         "dependencies/spdlog/include",
+        "dependencies/json/single_include/nlohmann",
         "cusp/include"
     }
 
@@ -77,7 +111,8 @@ project "cusp"
     pchsource "cusp/src/cusppch.cpp"
 
     links{
-        "spdlog"
+        "spdlog",
+        "json"
     }
 
     filter "configurations:Debug"

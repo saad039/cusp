@@ -1,23 +1,41 @@
 #include"cusppch.h"
-#include"cusp.h"
+#include"cusp_init.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include"input_handler.h"
+using namespace std;
 
 
 std::shared_ptr<spdlog::logger> cuspLogger{spdlog::stdout_color_mt("cuspLogger")};
+void print(std::string something){
+    __SET_PATTERN_BW__;
+    LOG_INFO(something);
+}
 
-#define log(x) std::cout<<x<<std::endl
 int main(){
-  
-    __SET_PATTERN_COL__;
-    if(cusp::premake_precondition()){
-        LOG_INFO("File Exists\n");
-    }
-    else{
-        LOG_WARNING("File does not exist\n");
-    }
+
+
+    // if(cusp::premake_precondition()){
+    //     LOG_INFO("premake Exists\n");
+    // }
+    // else{
+    //     LOG_ERROR("premake does not exist\n");
+    // }
+
+    // std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    // std::stringstream stream;
+    // stream<<std::ctime(&end_time);
+
+    // auto strs= util::tokenizer(stream.str(),' ');
+    // std::for_each(std::begin(strs),std::end(strs),[](const std::string& s){
+    //     std::cout<<s<<std::endl;
+    // });
     
-    log(cusp::getTargetArchitecture());
-    return 0;
+    cusp::cusp_init();
+    
+
+    //std::cout<<inputHandler::MITLicense("2020","Hassan Bilal")<<std::endl;
+   // cusp::getSolutionName();
+    return 0;   
 }
 
 

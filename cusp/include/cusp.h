@@ -3,10 +3,21 @@
 #if defined _WIN32 || _WIN64
 constexpr auto premakePath = "C://premake//premake5.exe";
 #elif defined __APPLE__ || __MACH__
-constexpr auto premakePath = R("bin/premake5");
+constexpr auto premakePath = R("/bin/premake5");
 #elif defined unix || __unix || __unix__
 constexpr auto premakePath = "/bin/premake5";
 #endif
+
+#if     __cplusplus     ==   199711L
+#define __cpp98__       
+#elif   __cplusplus     ==   201103L
+#define __cpp11__       
+#elif   __cplusplus     ==   201402L
+#define __cpp14__       
+#elif   __cplusplus     ==   201703L
+#define __cpp17__
+#endif
+
 #include "cusppch.h"
 
 #define ALL_COLOR_TEXT "%^%v%$"
@@ -17,7 +28,7 @@ extern std::shared_ptr<spdlog::logger> cuspLogger;
 #define LOG_INFO(...)           cuspLogger->info(__VA_ARGS__)
 #define LOG_WARNING(...)        cuspLogger->warn(__VA_ARGS__)
 #define LOG_ERROR(...)          cuspLogger->error(__VA_ARGS__)
-#define __SET_PATTERN_BW__      cuspLogger->set_pattern(ALL_WHITE_TEXT);
+#define __SET_PATTERN_BW__      cuspLogger->set_pattern(ALL_WHITE_TEXT)
 #define __SET_PATTERN_COL__     cuspLogger->set_pattern(ALL_COLOR_TEXT)
 
 namespace cusp
@@ -41,7 +52,7 @@ namespace cusp
         return util::takeConsoleInput(
             [&]() {
                 __SET_PATTERN_BW__;
-                LOG_INFO("Project Name. Skip for same as project: ");
+                LOG_INFO("Project Name. Enter for same as solution: ");
             });
     }
 
@@ -60,8 +71,8 @@ namespace cusp
             [&]() {
                 __SET_PATTERN_BW__;
                 LOG_INFO(R"(Target Architecture: 
-    32 bit/x86
-    64 bit/x86_64: )");
+    32bit/x86
+    64bit/x86_64: )");
             });
     }
 
@@ -87,18 +98,32 @@ gcc: )");
         return util::takeConsoleInput(
             [&]() {
                 __SET_PATTERN_BW__;
-                LOG_INFO("Kind? ConsoleApp/SharedLib/StaticLib: ");
+                LOG_INFO("Kind? consoleapp/sharedlib/staticlib: ");
             });
     }
 
-    static bool addMITLicense(){
+    static bool shouldaddMITLicense(){
         auto response= util::takeConsoleInput(
             [&]() {
                 __SET_PATTERN_BW__;
-                LOG_INFO("Licence MIT (y/n): ");
+                LOG_INFO("Add MIT Licence (y/n): ");
             });
             return response[0]=='Y' || response[0]=='y';
     }
+
+    static std::string getLibsToLinksAgainst(){
+        return util::takeConsoleInput([&](){
+            __SET_PATTERN_BW__;
+            LOG_INFO("Specify Libraries to link against. -1 when done: ");
+        });
+    };
+
 } // namespace cusp
 
 #endif // _CUSP_H_
+
+
+
+// cusp-init
+// cusp run
+// 
