@@ -1,5 +1,5 @@
 #include"cusppch.h"
-#include"cusp_init.h"
+#include"solution.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include"input_handler.h"
 using namespace std;
@@ -30,7 +30,7 @@ int main(){
     //     std::cout<<s<<std::endl;
     // });
     
-    cusp::cusp_init();
+    //cusp::cusp_init();
     
 
     //std::cout<<inputHandler::MITLicense("2020","Hassan Bilal")<<std::endl;

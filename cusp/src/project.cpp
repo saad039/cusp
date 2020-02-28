@@ -1,7 +1,7 @@
-#include"cuspProject.h"
+#include"project.h"
 
 
-CuspProject::CuspProject(const std::string& name,const std::string& cppver,
+Project::Project(const std::string& name,const std::string& cppver,
         const std::string&type,const std::vector<std::string>&linklibs)
         :project_name(name),cppDialect(cppver),kind(type),libs(linklibs)
     {
@@ -11,18 +11,18 @@ CuspProject::CuspProject(const std::string& name,const std::string& cppver,
         this->root["links"]=this->libs;
     }
 
-    const std::string& CuspProject::ProjectName()               const{
+    const std::string& Project::ProjectName()               const{
         return project_name;        
     }       
-    const std::string& CuspProject::CppDialect()                const{
+    const std::string& Project::CppDialect()                const{
         return cppDialect;      
     }       
-    const std::string& CuspProject::Kind()                      const{
+    const std::string& Project::Kind()                      const{
         return kind;        
     }       
-    const std::vector<std::string>& CuspProject::Libs()         const{
+    const std::vector<std::string>& Project::Libs()         const{
         return libs;
     }
-    const nlohmann::json& CuspProject::getRoot()   const{
+    const nlohmann::json& Project::getRoot()                const{
         return root;
     }

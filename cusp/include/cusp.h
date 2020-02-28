@@ -89,8 +89,9 @@ namespace cusp
             [&]() {
                 __SET_PATTERN_BW__;
                 LOG_INFO(R"(Toolset: 
-llvm
-gcc: )");
+llvm (Clang toolset)
+gcc (GNU Compiler Toolchain)
+msc (Microsoft C/C++ compiler))");
             });
     }
 

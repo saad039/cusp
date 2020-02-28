@@ -11,6 +11,7 @@
 #include <chrono>
 #include <algorithm>
 #include <filesystem>
+#include <stdexcept>
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "util.h"

@@ -7,7 +7,7 @@ namespace inputHandler{
 
 
     //returns the solution name after validation
-    std::string solutionName(){
+    static std::string solutionName(){
         std::string input;
         bool isValid=true;
         do{
@@ -24,14 +24,14 @@ namespace inputHandler{
     }
     
     //return the project name if entered. Returns solution's name if omitted
-    std::string projectName(const std::string& solName){
+    static std::string projectName(const std::string& solName){
         std::string input = cusp::getProjectName();
         return input.length() ? input : solName;
     }
 
-    std::string author(){ return cusp::getAuthorName();}
+    static std::string author(){ return cusp::getAuthorName();}
 
-    std::string architecture(){
+    static std::string architecture(){
         std::string input;
         bool isValid=true;
         do{
@@ -49,7 +49,7 @@ namespace inputHandler{
         return input;
     }
 
-    std::string cppDialect(){
+    static std::string cppDialect(){
         std::string input;
         bool isValid=true;
         do{
@@ -67,7 +67,7 @@ namespace inputHandler{
         return input;
     }
 
-    std::string kind(){
+    static std::string kind(){
         std::string input;
         bool isValid=true;
         do{
@@ -75,7 +75,7 @@ namespace inputHandler{
             isValid=util::assert_validity([](const std::string& input){
                 return input=="consoleapp"     ||    input == "staticlib" 
                                                ||    
-                                          input=="sharedlib";
+                                        input  == "sharedlib";
             }, input);
             if(!isValid){
                 __SET_PATTERN_COL__;
@@ -85,7 +85,24 @@ namespace inputHandler{
         return input;
     }
 
-    std::vector<std::string> libsTolinks(){
+    static std::string toolset(){
+        std::string input;
+        bool isValid =true;
+        do{
+            input=cusp::getToolset();
+            isValid= util::assert_validity([](const std::string& input){
+                return input=="gcc"           || input=="llvm" 
+                                              ||
+                                        input == "msc";
+            },input);
+            if(!isValid){
+                __SET_PATTERN_COL__;
+                LOG_ERROR("Invalid Entry\n");
+            }
+        } while(!isValid);
+        return input;
+    }
+    static std::vector<std::string> libsTolinks(){
         std::vector<std::string> libs;
         std::string input;
         do
@@ -98,7 +115,7 @@ namespace inputHandler{
         return libs;
     }
 
-    std::string MITLicense(const std::string& year, const std::string& author){
+    static std::string MITLicense(const std::string& year, const std::string& author){
         if(!cusp::shouldaddMITLicense())
             return std::string();
         else{

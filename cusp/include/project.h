@@ -1,10 +1,10 @@
-#ifndef CUSP_PROJECT_H
-#define CUSP_PROJECT_H
+#ifndef PROJECT_H
+#define PROJECT_H
 
 #include<string>
 #include<vector>
 #include"json.hpp"
-class CuspProject{
+class Project{
 private:
     const std::string project_name;
     const std::string cppDialect;
@@ -12,7 +12,7 @@ private:
     std::vector<std::string> libs;
     nlohmann::json root;
 public:
-    CuspProject(const std::string& name, const std::string& cppver,
+    Project(const std::string& name, const std::string& cppver,
         const std::string&type, const std::vector<std::string>& linklibs);
     
     const std::string& ProjectName()                const;
@@ -25,4 +25,4 @@ public:
 
 
 
-#endif // CUSP_PROJECT_H
+#endif // PROJECT_H
