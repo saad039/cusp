@@ -141,6 +141,77 @@ namespace inputHandler{
             return stream.str();
         }
     }
+
+    bool checkHeaderValidity(const std::string& inp) {
+        int len = inp.length();
+        std::size_t find = inp.find(".");
+        if (find != std::string::npos) {
+            find = inp.find(".", find + 1);
+            if (find != std::string::npos)
+                return false;
+        }
+        else return false;
+        find = inp.find(".h");
+        if (find != std::string::npos && find == len - 2 && find != 0)
+            return true;
+        find = inp.find(".hpp");
+        if (find != std::string::npos && find == len - 4 && find != 0)
+            return true;
+        return false;
+    }
+
+    static std::string takeHeaderFileNameInput(){
+        while (true) {
+            std::string inp = cusp::getHeaderFileName();
+            if (!checkHeaderValidity(inp)) {
+                __SET_PATTERN_COL__;
+                LOG_ERROR("Invalid Entry\n");
+            }
+            else if (std::filesystem::exists(cusp::getProjectName() + "/include/" + inp)) {
+                __SET_PATTERN_COL__;
+                LOG_ERROR("File name already exits\n");
+            }
+            else {
+                return inp;
+            }
+        }
+    }
+
+    bool checkSourceValidity(const std::string& inp) {
+        int len = inp.length();
+        std::size_t find = inp.find(".");
+        if (find != std::string::npos) {
+            find = inp.find(".", find + 1);
+            if (find != std::string::npos)
+                return false;
+        }
+        else return false;
+        find = inp.find(".cpp");
+        if (find != std::string::npos && find == len - 4 && find != 0)
+            return true;
+        find = inp.find(".cc");
+        if (find != std::string::npos && find == len - 3 && find != 0)
+            return true;
+        return false;
+    }
+
+    static std::string takeSourceFileNameInput() {
+        while (true) {
+            std::string inp = cusp::getSourceFileName();
+            if (!checkSourceValidity(inp)) {
+                __SET_PATTERN_COL__;
+                LOG_ERROR("Invalid Entry\n");
+            }
+            else if (std::filesystem::exists(cusp::getProjectName() + "/source/" + inp)) {
+                __SET_PATTERN_COL__;
+                LOG_ERROR("File name already exits\n");
+            }
+            else {
+                return inp;
+            }
+        }
+    }
+
 }
 
 #endif //INPUT_HANDLER_H

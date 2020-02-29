@@ -119,6 +119,19 @@ msc (Microsoft C/C++ compiler))");
         });
     };
 
+    static std::string getHeaderFileName() {
+        return util::takeConsoleInput([&]() {
+            __SET_PATTERN_BW__;
+            LOG_INFO("Enter the header file name: ");
+            });
+    }
+
+    static std::string getSourceFileName() {
+        return util::takeConsoleInput([&]() {
+            __SET_PATTERN_BW__;
+            LOG_INFO("Enter the source file name: ");
+            });
+    }
 } // namespace cusp
 
 #endif // _CUSP_H_

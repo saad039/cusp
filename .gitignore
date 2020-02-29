@@ -5,3 +5,8 @@ cusp/Makefile
 Makefile
 .vscode/**
 *.json
+*.sln
+.vs/
+build/
+cusp.VC.db
+ipch/
