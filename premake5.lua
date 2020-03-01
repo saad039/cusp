@@ -62,13 +62,13 @@ project "cusp"
         
 		"cusp/src/**.cpp",
         "cusp/include/**.h",
-        "dependencies/nlohmannJson"
+        "dependencies/JSON"
     }
 
 
     includedirs{
         "dependencies/spdlog/include",
-        "dependencies/nlohmannJson",
+        "dependencies/JSON",
         "cusp/include"
     }
 
