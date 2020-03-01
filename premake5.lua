@@ -8,10 +8,44 @@ workspace "cusp"
         "Release"
     }
 
+    project "spdlog"
+    
+    location "build/spdlog"
+    kind "Staticlib"
+    language"C++"
+    toolset "msc"
+    cppdialect "C++17"
+    staticruntime "on"
 
-group "Dependencies"
-include "dependencies/spdlog"
-group ""
+
+    targetdir ("bin/%{prj.name}")
+    objdir("bin-init/%{prj.name}")
+     
+
+    defines{
+        "SPDLOG_COMPILED_LIB"
+    }
+
+    files{
+        "include/**.h",
+        "src/**.cpp"
+    }
+    
+    includedirs{
+        "include"
+    }
+
+    filter "configurations:Debug"
+        defines { "DEBUG" }
+        runtime "Debug"
+        symbols "on"
+      
+  
+   filter "configurations:Release"
+        defines { "NDEBUG" }
+        runtime "Release"     
+        optimize "On"
+
 
 project "cusp"
     location "build/cusp"
