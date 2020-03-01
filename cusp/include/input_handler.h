@@ -40,9 +40,9 @@ namespace inputHandler{
     extern std::string              kind();
     extern std::string              toolset();
     extern std::vector<std::string> libsTolinks();
-    extern std::string              HeaderFileName(const std::string &project);
-    extern std::string              SourceFileName(const std::string &project);
-    extern std::string              ClassName(const std::string &project);
+    extern bool                     HeaderFileName(const std::string &project,const std::string& header);
+    extern bool                     SourceFileName(const std::string &project,const std::string& src);
+    extern bool                     ClassName(const std::string &project,const std::string& cName);
     extern std::string              MITLicense(const std::string &year, const std::string &author);
 
 }

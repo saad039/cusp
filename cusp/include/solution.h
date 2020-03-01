@@ -18,7 +18,6 @@ class Solution{
 
         std::vector<Project>        projects;
 
-        // const std::string cuspDotJsonpath  ="../../Cusp.json";
         static const std::string configuationFile;
     public:
         Solution()=default;
@@ -26,19 +25,14 @@ class Solution{
                     const std::vector<std::string>& links, csref author);
         void update();
         void addProject(csref newProjectName,csref newProjectKind,
-                        const std::vector<std::string>& newProjectLibs, csref newProjectCppDialect);
-        
-        void addHeader(csref projectName, csref header) const; //usr will specify extension as well
-        
-        void addSourceFile(csref projectName, csref File); //user will specify extension
-        
-        void addClass(csref projectName, csref className); //name only
-        
+                        const std::vector<std::string>& newProjectLibs, 
+                        csref newProjectCppDialect);
+        void addHeader(csref projectName, csref header) const; 
+        void addSourceFile(csref projectName, csref File); 
+        void addClass(csref projectName, csref className); 
         void generateProjectDirectories(csref path,csref ProjectName) const;
-        
-        void generateCuspDotJson(csref path) const; //generates cusp.json file
-
-
+        void generateCuspDotJson(csref path) const; 
+        void generateNewProjectDirectories(csref pjName) const;
         bool checkCuspInitPreconditions()       const; 
         
 };

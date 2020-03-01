@@ -52,7 +52,7 @@ project "spdlog"
 project "json"
     
     location "build/json"
-    kind "Sharedlib"
+    kind "Staticlib"
     language"C++"
     toolset "gcc"
     cppdialect "C++17"

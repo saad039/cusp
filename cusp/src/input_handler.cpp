@@ -64,7 +64,7 @@ std::string inputHandler::helpers::getToolset()
             LOG_INFO(R"(Toolset: 
     llvm (Clang toolset)
     gcc (GNU Compiler Toolchain)
-    msc (Microsoft C/C++ compiler))");
+    msc (Microsoft C/C++ compiler):  )");
         });
 }
 
@@ -73,7 +73,7 @@ std::string inputHandler::helpers::getKindOfProject()
     return util::takeConsoleInput(
         [&]() {
             __SET_PATTERN_BW__;
-            LOG_INFO("Kind? consoleapp/sharedlib/ lib: ");
+            LOG_INFO("Kind? consoleapp/(shared/static)lib: ");
         });
 }
 
@@ -91,7 +91,7 @@ std::string inputHandler::helpers::getLibsToLinksAgainst()
 {
     return util::takeConsoleInput([&]() {
         __SET_PATTERN_BW__;
-        LOG_INFO("Specify Libraries to link against. -1 when done: ");
+        LOG_INFO("Specify Libraries to link against: ");
     });
 };
 
@@ -217,8 +217,8 @@ std::string inputHandler::kind()
     {
         input = inputHandler::helpers::getKindOfProject();
         isValid = util::assert_validity([](const std::string &input) {
-            return input == "consoleapp" || input == " lib" ||
-                   input == "sharedlib";
+            return input == "consoleapp" || input == "static" ||
+                   input == "shared";
         },
                                         input);
         if (!isValid)
@@ -257,96 +257,63 @@ std::vector<std::string> inputHandler::libsTolinks()
     do
     {
         input = inputHandler::helpers::getLibsToLinksAgainst();
-        if (input != "-1")
+        if (input != "")
         {
             libs.push_back(input);
         }
-    } while (input != "-1");
+    } while (input != "");
     return libs;
 }
 
-std::string inputHandler::HeaderFileName(const std::string &project)
+bool inputHandler::HeaderFileName(const std::string &project,const std::string& header)
 {
-    std::string input;
-    bool isValid = true;
-    do
-    {
-        input = inputHandler::helpers::getHeaderName();
-        isValid = util::assert_validity([](const std::string &input) {
-            return (input.find(".h") != std::string::npos ||
-                    input.find(".hpp") != std::string::npos) &&
-                   std::count(std::begin(input), std::end(input), '.') == 1;
-        },
-                                        input);
-        if (!isValid)
-        {
-            __SET_PATTERN_COL__;
-            LOG_ERROR("Invalid Header Name\n");
-        }
-    } while (!isValid);
-    if (std::filesystem::exists(project + "/include/" + input))
-    {
-        __SET_PATTERN_COL__;
-        LOG_ERROR("File Already Exists\n");
-        EXIT_EXECUTION;
-    }
-    return input;
+     static const std::string headreg = "([a-zA-Z0-9\\_\\(\\):])+(.h|.hpp)$";
+     if(std::regex_match(header,std::regex(headreg))){
+          if (!std::filesystem::exists(project + "/include/" + header)){
+              return true;
+          }
+          else{
+              __SET_PATTERN_COL__;
+              LOG_ERROR("File already exists");
+              return false;
+          }      
+     }
+     else{
+         __SET_PATTERN_COL__;
+         LOG_ERROR("Invalid File Name");
+         return false;
+     }
 }
 
-std::string inputHandler::SourceFileName(const std::string &project)
+bool inputHandler::SourceFileName(const std::string &project,const std::string& srcFile)
 {
-    std::string input;
-    bool isValid = true;
-    do
-    {
-        input = inputHandler::helpers::getSourceFileName();
-        isValid = util::assert_validity([](const std::string &input) {
-            return (input.find(".cpp") != std::string::npos ||
-                    input.find(".cc") != std::string::npos) &&
-                   std::count(std::begin(input), std::end(input), '.') == 1;
-        },
-                                        input);
-        if (!isValid)
-        {
-            __SET_PATTERN_COL__;
-            LOG_ERROR("Invalid Src File Name\n");
+   static const std::string srcreg = "([a-zA-Z0-9\\_\\(\\):])+(.cpp|.cc)$";
+   if(std::regex_match(srcFile,std::regex(srcreg))){
+        if (!std::filesystem::exists(project + "/src/" + srcFile)){
+              return true;
         }
-    } while (!isValid);
-    if (std::filesystem::exists(project + "/include/" + input))
-    {
-        __SET_PATTERN_COL__;
-        LOG_ERROR("File Already Exists\n");
-        EXIT_EXECUTION;
-    }
-    return input;
+        else{
+            __SET_PATTERN_COL__;
+            LOG_ERROR("File already exists\n");
+            return false;
+        }         
+   }
+   else{
+       __SET_PATTERN_COL__;
+       LOG_ERROR("Invalid File Name\n");
+       return false;
+   }
 }
 
-std::string inputHandler::ClassName(const std::string &project)
+bool inputHandler::ClassName(const std::string &project, const std::string& className)
 {
-    std::string input;
-    bool isValid = true;
-    do
-    {
-        input = inputHandler::helpers::getClassName();
-        isValid = util::assert_validity([](const std::string &input) {
-            return std::count(std::begin(input), std::end(input), '.') == 0;
-        },
-                                        input);
-        if (!isValid)
-        {
-            __SET_PATTERN_COL__;
-            LOG_ERROR("Invalid Class Name\n");
-        }
-    } while (!isValid);
-    auto head = input + ".h";
-    auto src = input + ".cpp";
-    if (std::filesystem::exists(project + "/include/" + head) ||
-        std::filesystem::exists(project + "/src/" + src))
-    {
-        LOG_ERROR("Class File(s) Already Exist(s)\n");
-        EXIT_EXECUTION;
-    }
-    return input;
+    
+    auto cHeader =  className + ".h";
+    auto cSrc    =  className + ".cpp";
+    if(inputHandler::HeaderFileName(project,cHeader) && inputHandler::SourceFileName(project,cSrc))
+        return true;
+    else
+        return false;
 }
 
 std::string inputHandler::MITLicense(const std::string &year, const std::string &author)

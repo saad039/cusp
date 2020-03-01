@@ -23,14 +23,14 @@ constexpr auto premakePath = "/bin/premake5";
 
 namespace cusp
 {
-    const std::string confFile= "Cusp.json";
+    static const std::string confFile= "Cusp.json";
     extern bool premake_precondition();
     extern bool checkAddOperationPreconditions();
     extern void cusp_init_wizard();
     extern void cusp_add_project(Solution& workspace);
-    extern void cusp_add_header_file(Solution& workspace, const std::string& project);
-    extern void cusp_add_source_file(Solution& workspace, const std::string& project);
-    extern void cusp_add_class(Solution& workspace, const std::string& project);
+    extern void cusp_add_header_file(Solution& workspace, const std::string& project,const std::string& name);
+    extern void cusp_add_source_file(Solution& workspace, const std::string& project,const std::string& name);
+    extern void cusp_add_class(Solution& workspace, const std::string& project,const std::string& name);
     extern void cusp_add_wizard(const std::vector<std::string>& commands);
 
 } // namespace cusp

@@ -22,8 +22,8 @@ void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial
         LOG_WARNING("Failed To Create Solution Directory\n");
         EXIT_EXECUTION;
     }
-    generateProjectDirectories(solution_name+'/',project_name);
-    auto cuspjsonpath=solution_name+"/";
+    generateProjectDirectories(solution_name,project_name);
+    auto cuspjsonpath=solution_name+"/"+configuationFile;
     generateCuspDotJson(cuspjsonpath);
 }
     
@@ -55,10 +55,20 @@ void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial
                                 csref newProjectKind,
                                 const std::vector<std::string>& newProjectLibs,
                                 csref newProjectCppDialect){
+
+        if(newProjectKind=="consoleapp"){
+            for(const auto& proj: projects){
+                if(proj.Kind()=="consoleapp"){
+                    __SET_PATTERN_COL__;
+                    LOG_ERROR("solution can have only one entry point\n");
+                    EXIT_EXECUTION;
+                }
+            }
+        }
         this->projects.emplace_back(newProjectName,newProjectCppDialect,
                                         newProjectKind,newProjectLibs);
-        generateProjectDirectories("",newProjectName);
-        generateCuspDotJson(""); 
+        generateNewProjectDirectories(newProjectName);
+        generateCuspDotJson(configuationFile); 
     }
 
 
@@ -69,25 +79,18 @@ void Solution::generateCuspDotJson(csref path) const{
     tree["author"]          =        this->author_name;
     tree["toolset"]         =        this->toolset;
     tree["cppdialect"]      =        this->cppDialect;
-
     std::for_each(std::begin(projects),std::end(projects),[&](const Project& proj){
-        tree["project"][proj.ProjectName()] =proj.getRoot();         
+        tree["projects"][proj.ProjectName()] = proj.getRoot();         
     });
 
-    std::unique_ptr<std::ofstream> out;
-    if(path.length()){
-        out=std::make_unique<std::ofstream>(path);
-    }
-    else{
-        out=std::make_unique<std::ofstream>();
-    }
-    if(out->is_open()){
-        (*out)<<tree<<std::endl;
-        out->close();
+    std::ofstream out(path);
+    if(out.is_open()){
+        out<<tree<<std::endl;
+        out.close();
     }
     else{
         __SET_PATTERN_COL__;
-        LOG_WARNING("FAILED TO UPDATE CUSP LOG\n");
+        LOG_ERROR("FAILED TO UPDATE CUSP LOG\n");
         throw std::runtime_error("");
     }
 }
@@ -99,70 +102,68 @@ void Solution::generateCuspDotJson(csref path) const{
         //Precondition: configuration file should exist. If not, it should display error
     
 
-    void Solution::generateProjectDirectories(csref path,csref ProjectName) const{
+    void Solution::generateProjectDirectories(csref path,csref pjName) const{
         try{
-            std::filesystem::create_directory(path+'/'+ProjectName);
-            std::filesystem::create_directory(path+'/'+ProjectName+'/'+"include"  );
-            std::filesystem::create_directory(path+'/'+ProjectName+'/'+"src"      );
+            std::filesystem::create_directories( path+'/'+pjName                );
+            std::filesystem::create_directories( path+'/'+pjName+'/'+"include"  );
+            std::filesystem::create_directories( path+'/'+pjName+'/'+"src"      );
         }
         catch(const std::exception& e)
         {
+            
             __SET_PATTERN_COL__;
-            LOG_ERROR("Failed to Create Project Directories\n");
+            LOG_ERROR(e.what()+'\n');
+            LOG_ERROR("failed to create project directories\n");
+            EXIT_EXECUTION;
+        }
+    }
+
+    void Solution::generateNewProjectDirectories(csref pjName) const{
+        try{
+            std::filesystem::create_directory(pjName);
+            std::filesystem::create_directories(pjName+'/'+"include"  );
+            std::filesystem::create_directories(pjName+'/'+"src"      );
+        }
+        catch(const std::exception& e)
+        {
+            
+            __SET_PATTERN_COL__;
+            LOG_ERROR(e.what()+'\n');
+            LOG_ERROR("failed to create project directories\n");
             EXIT_EXECUTION;
         }
     }
         
-    void Solution::addHeader(csref projectName, csref header) const{
-        std::string up_header;
-        std::transform(std::begin(header),std::end(header),std::begin(up_header),std::towupper);
-        auto loc=header.find(".");
-        if(std::filesystem::exists(projectName)){
-            loc == std::string::npos ? header.length() : loc;
-            auto includeGuard= header.substr(0,loc)+"_H_";
-            try{
-                std::ofstream out("/projectName/include/"+header);
-                out<<"#ifndef "<<includeGuard<<"\n"
-                 <<"#define "<<includeGuard<<"\n"
-                 <<"\n\n\n\n\n\n\n\n\n\n"
-                 <<"#endif    ////"+includeGuard<<std::endl;
-                 out.close();
-            }
-            catch(const std::exception& e)
-            {
-                __SET_PATTERN_COL__;
-                LOG_WARNING("Failed To add Header File\n");
-                EXIT_EXECUTION;
-            }
+    void Solution::addHeader(csref pjName, csref header) const{
+       
+        try{
+            const std::string filePath = pjName+"/include/"+header;
+            std::ofstream out(filePath);
+            out<<"#pragma once"<<"\n"; 
+            out.close();
         }
-        else{
-             __SET_PATTERN_COL__;
-            LOG_WARNING("Project Not Found\n");
+        catch(const std::exception& e)
+        {
+            __SET_PATTERN_COL__;
+            LOG_WARNING("Failed To add Header File\n");
+            EXIT_EXECUTION;
         }
-        
-    
     }
 
-    void Solution::addSourceFile(csref projectName,csref File){
-        if(std::filesystem::exists(projectName)){
-            try
-            {
-                std::ofstream out("/projectName/src/"+File);
-                 out.close();
-            }
-            catch(const std::exception& e)
-            {
-                __SET_PATTERN_COL__;
-                LOG_WARNING("Failed To add Source File\n");
-                EXIT_EXECUTION;
-            }
+    void Solution::addSourceFile(csref pjName,csref File){
+        try
+        {
+            std::string filePath= pjName+"/src/"+File;
+            std::ofstream out(filePath);
+            out.close();
         }
-        else{
-             __SET_PATTERN_COL__;
-            LOG_WARNING("Project Not Found\n");
+        catch(const std::exception& e)
+        {
+            __SET_PATTERN_COL__;
+            LOG_WARNING("Failed To add Source File\n");
+            EXIT_EXECUTION;
         }
-        
-    
+         
     }
 
     void Solution::addClass(csref projectName, csref className){
