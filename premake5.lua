@@ -9,80 +9,10 @@ workspace "cusp"
     }
 
 
-project "spdlog"
-    
-    location "build/spdlog"
-    kind "Staticlib"
-    language"C++"
-    toolset "msc"
-    cppdialect "C++17"
-    staticruntime "on"
+group "Dependencies"
+include "dependencies/spdlog"
+group ""
 
-
-    targetdir ("bin/%{prj.name}")
-    objdir("bin-init/%{prj.name}")
-     
-
-    defines{
-        "SPDLOG_COMPILED_LIB"
-    }
-
-    files{
-        "dependencies/spdlog/include/**.h",
-        "dependencies/spdlog/src/**.cpp"
-    }
-    
-    includedirs{
-        "dependencies/spdlog/include"
-    }
-
-    
-
-    filter "configurations:Debug"
-        defines { "DEBUG" }
-        runtime "Debug"
-        symbols "on"
-      
-  
-   filter "configurations:Release"
-        defines { "NDEBUG" }
-        runtime "Release"     
-        optimize "On"
-
-project "json"
-    
-    location "build/json"
-    kind "Staticlib"
-    language"C++"
-    toolset "msc"
-    cppdialect "C++17"
-    staticruntime "on"
-
-
-    targetdir ("bin/%{prj.name}")
-    objdir("bin-init/%{prj.name}")
-     
-
-    files{
-        "dependencies/nlohmannJson/single_include/nlohmann"
-    }
-    
-    includedirs{
-        "dependencies/nlohmannJson/single_include/nlohmann",
-    }
-
-    filter "configurations:Debug"
-        defines { "DEBUG" }
-        runtime "Debug"
-        symbols "on"
-      
-  
-   filter "configurations:Release"
-        defines { "NDEBUG" }
-        runtime "Release"     
-        optimize "On"
-    
-    
 project "cusp"
     location "build/cusp"
     kind "ConsoleApp"
@@ -97,17 +27,14 @@ project "cusp"
     files{
         
 		"cusp/src/**.cpp",
-        "cusp/include/**.h"
+        "cusp/include/**.h",
+        "dependencies/nlohmannJson"
     }
 
 
     includedirs{
         "dependencies/spdlog/include",
-<<<<<<< HEAD
-        "dependencies/json/include",
-=======
-        "dependencies/nlohmannJson/single_include/nlohmann",
->>>>>>> master
+        "dependencies/nlohmannJson",
         "cusp/include"
     }
 
@@ -115,8 +42,7 @@ project "cusp"
     pchsource "cusp/src/cusppch.cpp"
 
     links{
-        "spdlog",
-        "json"
+        "spdlog"
     }
 
     filter "configurations:Debug"
