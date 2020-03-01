@@ -1,6 +1,7 @@
 #include"cusppch.h"
 #include"cusp.h"
 
+
 const std::string Solution::configuationFile =cusp::confFile;
 std::shared_ptr<spdlog::logger> cuspLogger{spdlog::stdout_color_mt("cuspLogger")};
 void print(std::string something){

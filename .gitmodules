@@ -1,7 +1,13 @@
 [submodule "dependencies/spdlog"]
 	path = dependencies/spdlog
 	url = https://github.com/gabime/spdlog
+<<<<<<< HEAD
 
 [submodule "dependencies/json"]
 	path = dependencies/json
 	url = https://github.com/nlohmann/json.git
+=======
+[submodule "dependencies/nlohmannJson"]
+	path = dependencies/nlohmannJson
+	url = https://github.com/nlohmann/json.git
+>>>>>>> master
