@@ -64,19 +64,11 @@ project "json"
      
 
     files{
-<<<<<<< HEAD
-        "dependencies/json/include"
-    }
-    
-    includedirs{
-        "dependencies/json/include",
-=======
         "dependencies/nlohmannJson/single_include/nlohmann"
     }
     
     includedirs{
         "dependencies/nlohmannJson/single_include/nlohmann",
->>>>>>> master
     }
 
     filter "configurations:Debug"
