@@ -18,106 +18,20 @@ constexpr auto premakePath = "/bin/premake5";
 #define __cpp17__
 #endif
 
-#include "cusppch.h"
+#include"solution.h"
 
-#define ALL_COLOR_TEXT "%^%v%$"
-#define ALL_WHITE_TEXT "%^%v"
-
-extern std::shared_ptr<spdlog::logger> cuspLogger;
-
-#define LOG_INFO(...)           cuspLogger->info(__VA_ARGS__)
-#define LOG_WARNING(...)        cuspLogger->warn(__VA_ARGS__)
-#define LOG_ERROR(...)          cuspLogger->error(__VA_ARGS__)
-#define __SET_PATTERN_BW__      cuspLogger->set_pattern(ALL_WHITE_TEXT)
-#define __SET_PATTERN_COL__     cuspLogger->set_pattern(ALL_COLOR_TEXT)
 
 namespace cusp
 {
-    static bool premake_precondition()
-    {
-        return std::filesystem::exists(premakePath);
-    }
-
-    static std::string getSolutionName()
-    {
-        return util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO("Solution Name: ");
-            });
-    }
-
-    static std::string getProjectName()
-    {
-        return util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO("Project Name. Enter for same as solution: ");
-            });
-    }
-
-    static std::string getAuthorName()
-    {
-        return util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO("Author Name: ");
-            });
-    }
-
-    static std::string getTargetArchitecture()
-    {
-        return util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO(R"(Target Architecture: 
-    32bit/x86
-    64bit/x86_64: )");
-            });
-    }
-
-    static std::string getLanguageDialect(){
-        return util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO("C++ standard: ");
-            });
-    }
-
-    static std::string getToolset(){
-        return util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO(R"(Toolset: 
-llvm (Clang toolset)
-gcc (GNU Compiler Toolchain)
-msc (Microsoft C/C++ compiler))");
-            });
-    }
-
-    static std::string getKindOfProject(){
-        return util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO("Kind? consoleapp/sharedlib/staticlib: ");
-            });
-    }
-
-    static bool shouldaddMITLicense(){
-        auto response= util::takeConsoleInput(
-            [&]() {
-                __SET_PATTERN_BW__;
-                LOG_INFO("Add MIT Licence (y/n): ");
-            });
-            return response[0]=='Y' || response[0]=='y';
-    }
-
-    static std::string getLibsToLinksAgainst(){
-        return util::takeConsoleInput([&](){
-            __SET_PATTERN_BW__;
-            LOG_INFO("Specify Libraries to link against. -1 when done: ");
-        });
-    };
+    const std::string confFile= "Cusp.json";
+    extern bool premake_precondition();
+    extern bool checkAddOperationPreconditions();
+    extern void cusp_init_wizard();
+    extern void cusp_add_project(Solution& workspace);
+    extern void cusp_add_header_file(Solution& workspace, const std::string& project);
+    extern void cusp_add_source_file(Solution& workspace, const std::string& project);
+    extern void cusp_add_class(Solution& workspace, const std::string& project);
+    extern void cusp_add_wizard(const std::vector<std::string>& commands);
 
 } // namespace cusp
 

@@ -3,29 +3,44 @@
 #include"input_handler.h"
 #include"project.h"
 
+using csref =const std::string&;
 class Solution{
     private:
         std::string                 solution_name;          //solution exclusive
         std::string                 author_name;            //solution exclusive 
         std::string                 architecture;           //solution exclusive
         std::string                 toolset;                //solution exclusive
-        std::string                 cppDialect;             //solution exclusive
         
         std::string                 project_name;
         std::string                 kind;
         std::vector<std::string>    libs;
+        std::string                 cppDialect;             
+
         std::vector<Project>        projects;
 
-        const std::string path  ="../../Cusp.json";
+        // const std::string cuspDotJsonpath  ="../../Cusp.json";
+        static const std::string configuationFile;
     public:
         Solution()=default;
-        void cusp_init();
-        void addProject();
-        void addHeader(const std::string& projectName);
-        void addSourceFile(const std::string& projectName);
-        void addClass(const std::string& projectName);
-        void generateCuspDotJson() const;
+        void init(csref sln,csref proj, csref arch, csref tlset, csref cppDial, csref type,
+                    const std::vector<std::string>& links, csref author);
+        void update();
+        void addProject(csref newProjectName,csref newProjectKind,
+                        const std::vector<std::string>& newProjectLibs, csref newProjectCppDialect);
+        
+        void addHeader(csref projectName, csref header) const; //usr will specify extension as well
+        
+        void addSourceFile(csref projectName, csref File); //user will specify extension
+        
+        void addClass(csref projectName, csref className); //name only
+        
+        void generateProjectDirectories(csref path,csref ProjectName) const;
+        
+        void generateCuspDotJson(csref path) const; //generates cusp.json file
 
+
+        bool checkCuspInitPreconditions()       const; 
+        
 };
     
     
