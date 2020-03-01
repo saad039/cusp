@@ -14,7 +14,7 @@ project "spdlog"
     location "build/spdlog"
     kind "Staticlib"
     language"C++"
-    toolset "gcc"
+    toolset "msc"
     cppdialect "C++17"
     staticruntime "on"
 
@@ -54,7 +54,7 @@ project "json"
     location "build/json"
     kind "Staticlib"
     language"C++"
-    toolset "gcc"
+    toolset "msc"
     cppdialect "C++17"
     staticruntime "on"
 
@@ -64,11 +64,11 @@ project "json"
      
 
     files{
-        "dependencies/json/single_include/nlohmann"
+        "dependencies/json/include"
     }
     
     includedirs{
-        "dependencies/json/single_include/nlohmann",
+        "dependencies/json/include",
     }
 
     filter "configurations:Debug"
@@ -87,7 +87,7 @@ project "cusp"
     location "build/cusp"
     kind "ConsoleApp"
     language "C++"
-    toolset "gcc"
+    toolset "msc"
     cppdialect "C++17"
     staticruntime "on"
     
@@ -103,7 +103,7 @@ project "cusp"
 
     includedirs{
         "dependencies/spdlog/include",
-        "dependencies/json/single_include/nlohmann",
+        "dependencies/json/include",
         "cusp/include"
     }
 

@@ -1,3 +1,4 @@
+#include"cusppch.h"
 #include "input_handler.h"
 
 std::string inputHandler::helpers::getSolutionName()
