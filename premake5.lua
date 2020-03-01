@@ -64,11 +64,11 @@ project "json"
      
 
     files{
-        "dependencies/json/single_include/nlohmann"
+        "dependencies/nlohmannJson/single_include/nlohmann"
     }
     
     includedirs{
-        "dependencies/json/single_include/nlohmann",
+        "dependencies/nlohmannJson/single_include/nlohmann",
     }
 
     filter "configurations:Debug"
@@ -103,7 +103,7 @@ project "cusp"
 
     includedirs{
         "dependencies/spdlog/include",
-        "dependencies/json/single_include/nlohmann",
+        "dependencies/nlohmannJson/single_include/nlohmann",
         "cusp/include"
     }
 
