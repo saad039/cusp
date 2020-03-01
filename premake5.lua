@@ -8,7 +8,7 @@ workspace "cusp"
         "Release"
     }
 
-    project "spdlog"
+project "spdlog"
     
     location "build/spdlog"
     kind "Staticlib"
@@ -27,12 +27,12 @@ workspace "cusp"
     }
 
     files{
-        "include/**.h",
-        "src/**.cpp"
+        "dependencies/spdlog/include/**.h",
+        "dependencies/spdlog/src/**.cpp"
     }
     
     includedirs{
-        "include"
+        "dependencies/spdlog/include"
     }
 
     filter "configurations:Debug"
