@@ -120,6 +120,7 @@ project "cusp"
         runtime "Debug"
         symbols "on"
 
+  
     filter "configurations:Release"
         defines { "NDEBUG" }
         runtime "Release"

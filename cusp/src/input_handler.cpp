@@ -62,7 +62,7 @@ std::string inputHandler::helpers::getToolset()
         [&]() {
             __SET_PATTERN_BW__;
             LOG_INFO(R"(Toolset: 
-    llvm (Clang toolset)
+    clang (LLVM compiler infrastructure)
     gcc (GNU Compiler Toolchain)
     msc (Microsoft C/C++ compiler):  )");
         });
@@ -132,7 +132,7 @@ std::string inputHandler::solutionName()
         if (!isValid)
         {
             __SET_PATTERN_COL__;
-            LOG_WARNING("Invalid Name or A Directoy With Same Name Already Exists\n");
+            LOG_ERROR("Invalid Name or A Directoy With Same Name Already Exists\n");
         }
     } while (!isValid);
     return input;
@@ -159,7 +159,7 @@ std::string inputHandler::newProjectName()
         if (!isValid)
         {
             __SET_PATTERN_COL__;
-            LOG_WARNING("Invalid Project Name\n");
+            LOG_ERROR("Invalid Project Name\n");
         }
     } while (!isValid);
     return input;
@@ -238,7 +238,7 @@ std::string inputHandler::toolset()
     {
         input = inputHandler::helpers::getToolset();
         isValid = util::assert_validity([](const std::string &input) {
-            return input == "gcc" || input == "llvm" ||
+            return input == "gcc" || input == "clang" ||
                    input == "msc";
         },
                                         input);
