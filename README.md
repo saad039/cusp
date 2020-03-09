@@ -1,2 +1,2 @@
 # cusp
-A simple, easy to use package manager for C++.
+A simple, easy to use command line project manager for C++. Currently under development. 
