@@ -1,3 +1,4 @@
+#include "cusppch.h"
 #include"cusp.h"
 
 const std::string Solution::configuationFile =cusp::confFile;
@@ -8,8 +9,8 @@ void print(std::string something){
 }
 
 //only one entry point is supported
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]){
+
     if(cusp::premake_precondition()){
         std::vector<std::string> commands(argv,argv+argc);
         const auto& arg=commands.size()>1 ? commands[1]: "";

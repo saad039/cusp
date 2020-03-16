@@ -64,7 +64,7 @@ project "json"
      
 
     files{
-        "dependencies/json/single_include/nlohmann"
+        "dependencies/json/single_include/nlohmann/**.hpp"
     }
     
     includedirs{
