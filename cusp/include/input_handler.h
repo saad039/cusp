@@ -13,9 +13,9 @@ extern std::shared_ptr<spdlog::logger> cuspLogger;
 #define __SET_PATTERN_COL__     cuspLogger->set_pattern(ALL_COLOR_TEXT)
 #define EXIT_EXECUTION          std::exit(1)
 
-namespace inputHandler{
+namespace inputHandler {
 
-    namespace helpers{
+    namespace helpers {
         extern std::string      getSolutionName();
         extern std::string      getProjectName();
         extern std::string      getNewProjectName();
@@ -32,7 +32,7 @@ namespace inputHandler{
 
     }
     extern std::string              solutionName();
-    extern std::string              projectName(const std::string &solName);
+    extern std::string              projectName(const std::string& solName);
     extern std::string              newProjectName();
     extern std::string              author();
     extern std::string              architecture();
@@ -40,11 +40,10 @@ namespace inputHandler{
     extern std::string              kind();
     extern std::string              toolset();
     extern std::vector<std::string> libsTolinks();
-    extern bool                     HeaderFileName(const std::string &project,const std::string& header);
-    extern bool                     SourceFileName(const std::string &project,const std::string& src);
-    extern bool                     ClassName(const std::string &project,const std::string& cName);
-    extern std::string              MITLicense(const std::string &year, const std::string &author);
-
+    extern bool                     HeaderFileName(const std::string& project, const std::string& header);
+    extern bool                     SourceFileName(const std::string& project, const std::string& src);
+    extern bool                     ClassName(const std::string& project, const std::string& cName);
+    extern std::string              MITLicense(const std::string& year, const std::string& author);
 }
 
 #endif //INPUT_HANDLER_H

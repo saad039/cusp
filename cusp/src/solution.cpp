@@ -28,7 +28,7 @@ void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial
     generateCuspDotJson(cuspjsonpath);
 }
     
-    void Solution::update(){
+    void Solution::deserializeCuspDotJson(){
         std::ifstream inFile(configuationFile);
         if(inFile.is_open()){
             nlohmann::json tree;
@@ -81,7 +81,7 @@ void Solution::generateCuspDotJson(csref path) const{
     tree["toolset"]         =        this->toolset;
     tree["cppdialect"]      =        this->cppDialect;
     std::for_each(std::begin(projects),std::end(projects),[&](const Project& proj){
-        tree["projects"][proj.ProjectName()] = proj.getRoot();         
+        tree["projects"][proj.Name()] = proj.getTree();         
     });
 
     std::ofstream out(path);
@@ -92,7 +92,7 @@ void Solution::generateCuspDotJson(csref path) const{
     else{
         __SET_PATTERN_COL__;
         LOG_ERROR("FAILED TO UPDATE CUSP LOG\n");
-        throw std::runtime_error("");
+        EXIT_EXECUTION;
     }
 }
 

@@ -10,16 +10,16 @@ private:
     const std::string cppDialect;
     std::string kind;
     std::vector<std::string> libs;
-    nlohmann::json root;
+    nlohmann::json tree;
 public:
     Project(const std::string& name, const std::string& cppver,
         const std::string&type, const std::vector<std::string>& linklibs);
     
-    const std::string& ProjectName()                const;
+    const std::string& Name()                const;
     const std::string& CppDialect()                 const;
     const std::string& Kind()                       const;
     const std::vector<std::string>& Libs()          const;
-    const nlohmann::json& getRoot()                 const;
+    const nlohmann::json& getTree()                 const;
 };
 
 

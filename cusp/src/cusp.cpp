@@ -75,11 +75,11 @@ void cusp::cusp_add_wizard(const std::vector<std::string>& commands){
             LOG_ERROR("no arguments provided\n");
         }
         else if(targetProj=="project" && commands.size()==3){
-            workspace.update(); //initialises cusp's datastructures from Cusp.json file
+            workspace.deserializeCuspDotJson(); //initialises cusp's datastructures from Cusp.json file
             cusp::cusp_add_project(workspace);
         }
         else{
-            workspace.update(); //initialises cusp's datastructures from Cusp.json file
+            workspace.deserializeCuspDotJson(); //initialises cusp's datastructures from Cusp.json file
             if(name.length()){
                 if(to_add=="header"){
                 cusp::cusp_add_header_file(workspace,targetProj,name);

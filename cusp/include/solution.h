@@ -23,7 +23,7 @@ class Solution{
         Solution()=default;
         void init(csref sln,csref proj, csref arch, csref tlset, csref cppDial, csref type,
                     const std::vector<std::string>& links, csref author);
-        void update();
+        void deserializeCuspDotJson();
         void addProject(csref newProjectName,csref newProjectKind,
                         const std::vector<std::string>& newProjectLibs, 
                         csref newProjectCppDialect);

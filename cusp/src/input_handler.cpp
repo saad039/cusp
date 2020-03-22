@@ -207,6 +207,7 @@ std::string inputHandler::cppDialect()
             LOG_ERROR("Invalid Entry\n");
         }
     } while (!isValid);
+    input[0] = 'C'; //capitalising to avoid changing later
     return input;
 }
 
