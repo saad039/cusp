@@ -43,6 +43,6 @@ std::map<std::string, std::string> util::timeStamp()
     timestamp["month"] = tokens[1];
     timestamp["date"] = tokens[2];
     timestamp["time"] = tokens[3];
-    timestamp["year"] = tokens[5].substr(0, tokens[5].length() - 1);
+    timestamp["year"] = tokens[4].substr(0, tokens[4].length() - 1);
     return timestamp;
 }

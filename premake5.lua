@@ -19,8 +19,8 @@ project "spdlog"
     staticruntime "on"
 
 
-    targetdir ("bin/%{prj.name}")
-    objdir("bin-init/%{prj.name}")
+    targetdir ("bin/%{prj.name}/%{cfg.buildcfg}")
+    objdir("bin-init/%{prj.name}/%{cfg.buildcfg}")
      
 
     defines{
@@ -49,6 +49,41 @@ project "spdlog"
         runtime "Release"     
         optimize "On"
 
+project "ordered-map"
+    
+    location "build/ordered-map"
+    kind "Staticlib"
+   language"C++"
+    toolset "gcc"
+    cppdialect "C++17"
+    staticruntime "on"
+    
+    
+    targetdir ("bin/%{prj.name}/%{cfg.buildcfg}")
+    objdir("bin-init/%{prj.name}/%{cfg.buildcfg}")
+         
+    files{
+        "dependencies/ordered-map/include/**.h",
+        "dependencies/ordered-map/src/**.cpp"
+    }
+        
+    includedirs{
+        "dependencies/ordered-map/include"
+    }
+    
+        
+    
+    filter "configurations:Debug"
+        defines { "DEBUG" }
+        runtime "Debug"
+        symbols "on"
+          
+      
+    filter "configurations:Release"
+        defines { "NDEBUG" }
+        runtime "Release"     
+        optimize "On"
+
 project "json"
     
     location "build/json"
@@ -59,8 +94,8 @@ project "json"
     staticruntime "on"
 
 
-    targetdir ("bin/%{prj.name}")
-    objdir("bin-init/%{prj.name}")
+    targetdir ("bin/%{prj.name}/%{cfg.buildcfg}")
+    objdir("bin-init/%{prj.name}/%{cfg.buildcfg}")
      
 
     files{
@@ -92,8 +127,8 @@ project "cusp"
     cppdialect "C++17"
     staticruntime "on"
     
-    targetdir ("bin/%{prj.name}")
-    objdir("bin-init/%{prj.name}")
+    targetdir ("bin/%{prj.name}/%{cfg.buildcfg}")
+    objdir("bin-init/%{prj.name}/%{cfg.buildcfg}")
 
     files{
         
@@ -105,6 +140,7 @@ project "cusp"
     includedirs{
         "dependencies/spdlog/include",
         "dependencies/json/single_include/nlohmann",
+        "dependencies/ordered-map/include",
         "cusp/include"
     }
 
@@ -113,7 +149,8 @@ project "cusp"
 
     links{
         "spdlog",
-        "json"
+        "json",
+        "ordered-map"
     }
 
     filter "configurations:Debug"

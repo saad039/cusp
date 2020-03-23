@@ -1,6 +1,6 @@
 #include "cusppch.h"
 #include"solution.h"
-
+#include"cuspparser.h"
 
 void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial, csref type,
                     const std::vector<std::string>& links, csref author){
@@ -25,7 +25,7 @@ void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial
     }
     generateProjectDirectories(solution_name,project_name);
     auto cuspjsonpath=solution_name+"/"+configuationFile;
-    generateCuspDotJson(cuspjsonpath);
+    serializeCuspDotJson(cuspjsonpath);
 }
     
     void Solution::deserializeCuspDotJson(){
@@ -69,11 +69,11 @@ void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial
         this->projects.emplace_back(newProjectName,newProjectCppDialect,
                                         newProjectKind,newProjectLibs);
         generateNewProjectDirectories(newProjectName);
-        generateCuspDotJson(configuationFile); 
+        serializeCuspDotJson(configuationFile); 
     }
 
 
-void Solution::generateCuspDotJson(csref path) const{
+void Solution::serializeCuspDotJson(csref path) const {
     nlohmann::json tree;
     tree["workspace"]       =        this->solution_name;
     tree["architecture"]    =        this->architecture;
@@ -88,6 +88,8 @@ void Solution::generateCuspDotJson(csref path) const{
     if(out.is_open()){
         out<<tree<<std::endl;
         out.close();
+        cuspParser parser(tree);
+        parser.generatePremakeFiles();
     }
     else{
         __SET_PATTERN_COL__;
@@ -100,7 +102,6 @@ void Solution::generateCuspDotJson(csref path) const{
         return !std::filesystem::exists(configuationFile);
     }
 
-        //Precondition: configuration file should exist. If not, it should display error
     
 
     void Solution::generateProjectDirectories(csref path,csref pjName) const{

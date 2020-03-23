@@ -3,20 +3,23 @@
 #include<string>
 #include<string_view>
 #include<vector>
+#include<variant>
 #include"json.hpp"
 #include"project.h"
-#include<variant>
+#include"ordered_map.h"
+
 // Cusp parser's sole job is to convert cusp.json to premake5.lua
 class cuspParser
 {
 	using Json = nlohmann::json;
+	
 private:
 
 	Json tree;
 	
-	const std::string& getSolutionName();
+	const std::string getSolutionName();
 	std::string getArchitecture();
-	const std::string& getToolset();
+	const std::string getToolset();
 	std::vector<Project> getProjects();
 	std::string getProjectKind(const Project& p);
 	std::vector<std::string> getProjectNames();
@@ -31,10 +34,10 @@ private:
 	std::vector<std::string> getProjectsToLinkTo(const Project& project);
 	std::vector<std::string> getIncludeDirectoriesPaths(const Project& p);
 
-	std::map<std::string, std::variant<std::string, std::vector<std::string>, std::map<std::string, std::string>>>
+	tsl::ordered_map<std::string, std::variant<std::string, std::vector<std::string>, std::map<std::string, std::string>>>
 		getProjectPremakeConfiguration(const Project& project);
 
-	void generateProjectPremakeConfigurationFile(const Project& p);
+	std::string getProjectPremakeScript(const Project& p);
 public:
 	
 	cuspParser(Json json);
@@ -44,7 +47,7 @@ public:
 	cuspParser& operator=(cuspParser&&)			 = default;
 	~cuspParser()								 = default;
 
-
+	void generatePremakeFiles();
 
 };
 

@@ -12,7 +12,8 @@ void print(const T& something){
 //only one entry point is supported
 int main(int argc, char const *argv[]){
 
-    if(cusp::premake_precondition()){
+    cusp::cusp_init_wizard();
+    /*if(cusp::premake_precondition()){
         std::vector<std::string> commands(argv,argv+argc);
         const auto& arg=commands.size()>1 ? commands[1]: "";
         if(arg == "init"){
@@ -29,6 +30,6 @@ int main(int argc, char const *argv[]){
     else{
         __SET_PATTERN_COL__;
         LOG_ERROR("Fatal error.Premake does not exist in path\n");
-    }
+    }*/
     return 0;   
 }

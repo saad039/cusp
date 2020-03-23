@@ -15,7 +15,7 @@ public:
     Project(const std::string& name, const std::string& cppver,
         const std::string&type, const std::vector<std::string>& linklibs);
     
-    const std::string& Name()                const;
+    const std::string& Name()                              const;
     const std::string& CppDialect()                 const;
     const std::string& Kind()                       const;
     const std::vector<std::string>& Libs()          const;
