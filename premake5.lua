@@ -53,7 +53,7 @@ project "ordered-map"
     
     location "build/ordered-map"
     kind "Staticlib"
-   language"C++"
+    language"C++"
     toolset "gcc"
     cppdialect "C++17"
     staticruntime "on"

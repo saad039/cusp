@@ -9,14 +9,6 @@ cuspParser::cuspParser(Json json)
 {
 }
 
-void cuspParser::generatePremakeFiles()
-{
-	const auto projects = this->getProjects();
-	for (const auto& project : projects) {
-		this->getProjectPremakeScript(project);
-	}
-}
-
 const std::string cuspParser::getSolutionName(){
 	return this->tree["workspace"];
 }
@@ -58,6 +50,15 @@ std::string cuspParser::getProjectKind(const Project& p)
 		return "SharedLib";
 }
 
+std::string cuspParser::getProjectKind(const std::string& p)
+{
+	const auto projects = this->getProjects();
+	for (const auto& proj : projects)
+		if (proj.Name() == p)
+			return proj.Kind();
+	return std::string();
+}
+
 std::vector<std::string> cuspParser::getProjectNames()
 {
 	std::vector<std::string> names;
@@ -70,34 +71,64 @@ std::vector<std::string> cuspParser::getProjectNames()
 
 std::string cuspParser::getTargetDirectoryPath(const std::string& projectName)
 {
-	return std::string(projectName + "/bin/%{cfg.buildcfg}");
+	return std::string("bin/%{cfg.buildcfg}");
 }
 
 std::string cuspParser::getObjectDirectoryPath(const std::string& projectName)
 {
-	return std::string(projectName+"/bin-init/%{cfg.buildcfg}");
+	return std::string("bin-init/%{cfg.buildcfg}");
 }
 
 std::string cuspParser::getBuildDataLocation(const std::string& projectName)
 {
-	return std::string(projectName+"/build");
+	return std::string("build");
 }
 
 std::string cuspParser::getSourceFilesPath(const std::string& projectName)
 {
-	return std::string(projectName+"/src");
+	return std::string("src/");
 }
 
 std::string cuspParser::getIncludeFilesPath(const std::string& projectName)
 {
-	return std::string(projectName+"/include");
+	return std::string("include/");
 }
 
+//( "copy C:\\Users\\mwkan\\Desktop\\nlp\\ngrams\\bin\\%{cfg.buildcfg}\\ngrams.dll C:\\Users\\mwkan\\Desktop\\nlp\\driver\\bin\\%{cfg.buildcfg}\\ngrams.dll" )
+std::string cuspParser::getCopyIntoBinCommand(const std::string& src, const std::string& dst) {
+#if defined _WIN32 || _WIN64
+	constexpr auto slash = R"(\)";
+	std::string cwd = std::filesystem::current_path().string();
+	//cwd = util::replaceAll(cwd, R"(\)", slash);
+	std::string srcPath = cwd + slash + src + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
+	std::string dstPath = cwd + slash + dst + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
+	return ("copy " + srcPath + " " + dstPath);
+#elif defined __APPLE__ || __MACH__
+	constexpr auto copyCommand = R("/bin/premake5");
+#elif defined unix || __unix || __unix__
+	constexpr auto copyCommand = "/bin/premake5";
+#endif
+}
+
+std::vector<std::string> cuspParser::getPostBuildCommands(const Project& project, const std::vector<std::string>& sharedLibs) {
+	std::vector<std::string> commands;
+
+	std::for_each(std::begin(sharedLibs), std::end(sharedLibs), [&](const auto& lib) {
+		if(this->getProjectKind(lib) == "shared")
+			commands.push_back(this->getCopyIntoBinCommand(lib,project.Name()));
+		});
+	return commands;
+}
+
+
+//TODO decide fate of libs like pthread
 std::vector<std::string> cuspParser::getProjectsToLinkTo(const Project& project)
 {
 	const auto names = this->getProjectNames();
 	std::vector<std::string> projectsToLink;
+
 	std::for_each(std::begin(project.Libs()), std::end(project.Libs()),
+
 		[&](const std::string& lib) {
 			if (std::find(std::begin(names), std::end(names), lib) != std::end(names))
 				projectsToLink.push_back(lib);
@@ -111,14 +142,14 @@ std::vector<std::string> cuspParser::getIncludeDirectoriesPaths(const Project& p
 	const auto projectsToLink = this->getProjectsToLinkTo(p);
 	std::vector<std::string> paths;
 	for (const auto& p : projectsToLink) 
-		paths.emplace_back(std::string(p) + "/include");
+		paths.emplace_back("../" + std::string(p) + "/include");
 	
-	paths.emplace_back(p.Name() + "/include");
+	paths.emplace_back("include");
 	return paths;
 }
 
-//TODO: query the user about static runtime availibility
-//TODO: For now two primary configurations debug and release are supported. For custom configurations, functionality will be added on later.
+
+
 tsl::ordered_map<std::string, std::variant<std::string, std::vector<std::string>, std::map<std::string, std::string>>>
 	cuspParser::getProjectPremakeConfiguration(const Project& project)
 {
@@ -139,8 +170,12 @@ tsl::ordered_map<std::string, std::variant<std::string, std::vector<std::string>
 	const auto srcFiles = this->getSourceFilesPath(project.Name());
 
 	cfg["files"] = std::vector<std::string>{headers+"**.h" ,headers + "**.hpp",srcFiles + "**.cc",srcFiles + "**.cpp" };
+
 	cfg["includedirs"] = this->getIncludeDirectoriesPaths(project);
-	cfg["links"] = this->getProjectsToLinkTo(project);
+	const auto libsToLink = this->getProjectsToLinkTo(project);
+	cfg["links"] = libsToLink;
+
+	cfg["postbuildcommands"] = this->getPostBuildCommands(project, libsToLink);
 
 	std::map<std::string, std::string> debug,release;
 	debug["defines"] = "DEBUG";
@@ -200,7 +235,6 @@ std::string cuspParser::getProjectPremakeScript(const Project& p){
 	std::string path;
 	auto cwd = std::filesystem::current_path().string();
 	auto workspace = this->tree["workspace"];
-	std::cout << "Workspace: " << workspace << std::endl;
 	if (cwd.find(workspace) != std::string::npos)
 		path = p.Name() + "/premake5.lua";
 	else{
@@ -226,4 +260,56 @@ std::string cuspParser::getProjectPremakeScript(const Project& p){
 	return stream.str();
 }
 
+void cuspParser::generateSolutionPremakeScript(const Project* startupProject)
+{
 
+	std::stringstream stream;
+	const auto& workspace = (std::string)this->tree["workspace"];
+
+	stream << "workspace " << std::quoted(workspace) << '\n';
+	if(startupProject)
+		stream << '\t' << "startproject " << std::quoted(startupProject->Name()) << '\n';
+	stream << '\t' << "architecture " << std::quoted(this->getArchitecture()) << '\n';
+	stream << '\t' << "configurations{\n\t\t" << std::quoted("Debug") << ",\n\t\t" << std::quoted("Release") << "\n\t}\n\n\n";
+
+	std::string pathPrefix;
+	auto cwd = std::filesystem::current_path().string();
+	if (cwd.find(workspace) == std::string::npos) //new project
+		pathPrefix = (workspace)+'/';
+
+
+	const auto projectNames = this->getProjectNames();
+	for (const auto& name : projectNames)
+		stream << '\t' << "include " << std::quoted(name) << '\n';
+
+	//serialize 
+
+	std::ofstream out(pathPrefix + "premake5.lua");
+	if (out.is_open()) {
+		out << stream.str().c_str() << std::endl;
+		out.close();
+	}
+	else {
+#if defined DEBUG
+		throw std::runtime_error("Failed to create premake5.lua for solution" );
+#elif defined NDEBUG
+		__SET_PATTERN_COL__;
+		LOG_ERROR("Failed to create solution configuration file");
+		EXIT_EXECUTION;
+#endif
+	}
+}
+
+
+void cuspParser::generatePremakeFiles()
+{
+	const auto projects = this->getProjects();
+	const Project* startProject=nullptr;
+	for (const auto& project : projects) {
+		this->getProjectPremakeScript(project);
+		if (project.Kind() == "consoleapp")
+			startProject = &(project);
+	}
+	generateSolutionPremakeScript(startProject);
+
+}
