@@ -318,6 +318,18 @@ bool inputHandler::ClassName(const std::string &project, const std::string& clas
         return false;
 }
 
+bool  inputHandler::initializeGitRepository() {
+    char choice;
+    do {
+        __SET_PATTERN_BW__;
+        LOG_INFO("Initialise git repository?(Y/N): ");
+        std::cin >> choice;
+    } while ((choice != 'Y' && choice != 'y') && (choice != 'N' && choice != 'n'));
+    if (choice == 'Y' || choice == 'y')
+        return true;
+    return false;
+}
+
 std::string inputHandler::MITLicense(const std::string &year, const std::string &author)
 {
     if (!inputHandler::helpers::shouldaddMITLicense())

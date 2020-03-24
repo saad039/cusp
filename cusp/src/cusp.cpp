@@ -22,8 +22,9 @@ void cusp::cusp_init_wizard(){
     const auto  libs                =      inputHandler::libsTolinks();
     const auto  author_name         =      inputHandler::author();
     const auto  license             =      inputHandler::MITLicense(util::timeStamp()["year"],author_name);
+    const auto  enableGit           = inputHandler::initializeGitRepository();
     workspace.init(
-        solution_name,project_name,architecture,toolset,cppDialect,kind,libs,author_name
+        solution_name,project_name,architecture,toolset,cppDialect,kind,libs,author_name,enableGit
     );
     if(license.length()){
         std::ofstream out(solution_name+"/"+"LICENSE");

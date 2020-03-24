@@ -55,3 +55,27 @@ std::string util::replaceAll(std::string str, const std::string& from, const std
     }
     return str;
 }
+
+std::map<std::wstring, std::wstring> util::getEnvironmentVars() {
+
+    std::map<std::wstring, std::wstring> env;
+    auto free = [](wchar_t* p) { FreeEnvironmentStrings(p); };
+
+    auto env_block = std::unique_ptr<wchar_t, decltype(free)>{
+        GetEnvironmentStringsW(), free };
+
+    for (const wchar_t* name = env_block.get(); *name != L'\0'; )
+    {
+        const wchar_t* equal = wcschr(name, L'=');
+        std::wstring key(name, equal - name);
+
+        const wchar_t* pValue = equal + 1;
+        std::wstring value(pValue);
+
+        env[key] = value;
+
+        name = pValue + value.length() + 1;
+    }
+
+    return env;
+}

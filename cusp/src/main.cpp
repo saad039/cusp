@@ -1,6 +1,5 @@
 #include "cusppch.h"
 #include"cusp.h"
-
 const std::string Solution::configuationFile =cusp::confFile;
 std::shared_ptr<spdlog::logger> cuspLogger{spdlog::stdout_color_mt("cuspLogger")};
 template<typename T>
@@ -8,6 +7,7 @@ void print(const T& something){
     __SET_PATTERN_COL__;
     LOG_ERROR(something);
 }
+
 
 //only one entry point is supported
 int main(int argc, char const *argv[]){
@@ -30,5 +30,5 @@ int main(int argc, char const *argv[]){
         __SET_PATTERN_COL__;
         LOG_ERROR("Fatal error.Premake does not exist in path\n");
     }
-    return 0;   
+    return 0;
 }

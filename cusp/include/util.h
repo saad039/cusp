@@ -17,6 +17,7 @@ namespace util {
     extern std::string plainTimeStamp();
     extern std::map<std::string, std::string> timeStamp();
     extern std::string replaceAll(std::string str, const std::string& from, const std::string& to);
+    extern std::map<std::wstring, std::wstring> getEnvironmentVars();
     template<typename Callable>
     std::string takeConsoleInput(Callable logMessage){
         std::invoke(logMessage);
@@ -29,6 +30,7 @@ namespace util {
     auto assert_validity(Callable&& condition, Args... args) -> decltype(condition(args...)){
         return std::invoke(condition,args...);
     }
+
 
 } // namespace util
 

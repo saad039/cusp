@@ -21,7 +21,7 @@ namespace inputHandler {
         extern std::string      getLibsToLinksAgainst();
         extern std::string      getHeaderName();
         extern std::string      getSourceFileName();
-        extern std::string      getClassName();
+        extern std::string      getClassName(); 
 
     }
     extern std::string              solutionName();
@@ -37,6 +37,7 @@ namespace inputHandler {
     extern bool                     SourceFileName(const std::string& project, const std::string& src);
     extern bool                     ClassName(const std::string& project, const std::string& cName);
     extern std::string              MITLicense(const std::string& year, const std::string& author);
+    extern bool                     initializeGitRepository();
 }
 
 #endif //INPUT_HANDLER_H
