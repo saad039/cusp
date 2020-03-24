@@ -12,14 +12,34 @@ void print(const T& something){
 //only one entry point is supported
 int main(int argc, char const *argv[]){
 
-    if(cusp::premake_precondition()){
-        std::vector<std::string> commands(argv,argv+argc);
-        const auto& arg=commands.size()>1 ? commands[1]: "";
-        if(arg == "init"){
+    if (cusp::premake_precondition()) {
+        std::vector<std::string> commands(argv, argv + argc);
+        const auto& arg = commands.size() > 1 ? commands[1] : "";
+        if (arg == "init") {
             cusp::cusp_init_wizard();
         }
-        else if(arg == "add"){
+        else if (arg == "add") {
             cusp::cusp_add_wizard(commands);
+        }
+        else if (arg == "vscode") {  //for vscode
+
+        }
+        else if (arg == "vs2015" || arg == "vs2017" || arg == "vs2019") { //for visual studio 
+            cusp::cusp_generate_sln_files(arg);
+        }
+        else if (arg == "xcode") { //for xcode
+            cusp::cusp_generate_sln_files(arg);
+        }
+        else if (arg == "make") { //for makefiles
+            cusp::cusp_generate_sln_files(arg);
+        }
+        else if (arg == "build") { //for generating project builds using make
+            const auto& buildConf = commands[2];
+            cusp::cusp_build_project(buildConf);
+        
+        }
+        else if (arg == "update") {
+            cusp::cusp_update();
         }
         else{
             __SET_PATTERN_COL__;

@@ -7,8 +7,20 @@ bool cusp::premake_precondition()
     return std::filesystem::exists(premakePath);
 }
 
-bool cusp::checkAddOperationPreconditions() { 
+bool cusp::addOperationPreconditions() { 
     return std::filesystem::exists(confFile);
+}
+
+bool cusp::IDEPreconditions() {
+    return std::filesystem::exists(confFile) && std::filesystem::exists("premake5.lua");
+}
+
+bool cusp::buildPreconditions() {
+    return std::filesystem::exists("Makefile");
+}
+
+bool cusp::updatePreconditions() {
+    return cusp::addOperationPreconditions();
 }
 
 void cusp::cusp_init_wizard(){
@@ -66,7 +78,7 @@ void cusp::cusp_add_class(Solution& workspace, const std::string& project, const
 }
 
 void cusp::cusp_add_wizard(const std::vector<std::string>& commands){
-    if(cusp::checkAddOperationPreconditions()){
+    if(cusp::addOperationPreconditions()){
         Solution workspace;
         const auto& targetProj = commands[2]; //contains project or project_name
         const auto& to_add     = commands.size() > 3 ? commands[3] : ""; //contains "" or header/src/class
@@ -104,6 +116,57 @@ void cusp::cusp_add_wizard(const std::vector<std::string>& commands){
         
     }
     else{
+        __SET_PATTERN_COL__;
+        LOG_ERROR("Project Configuration File Does Not Exist\n");
+        EXIT_EXECUTION;
+    }
+}
+
+void cusp::cusp_generate_sln_files(const std::string& ide) {
+    if (IDEPreconditions()) {
+        std::string cmd;
+        if (ide.find("vs") != std::string::npos)
+            cmd = "premake5 " + ide;
+        else if (ide == "xcode")
+            cmd = std::string("premake5 ") + std::string("xcode4");
+        else if (ide == "make") 
+            cmd = std::string("premake5 ") + std::string("gmake2");
+        std::system(cmd.c_str());
+    }
+    else {
+        __SET_PATTERN_COL__;
+        LOG_ERROR("Project Configuration or Premake5.lua Does Not Exist\n");
+        EXIT_EXECUTION;
+    }
+}
+
+void cusp::cusp_build_project(const std::string& conf) {
+    if (buildPreconditions()) {
+        if (conf == "debug" || conf == "release") {
+            std::string cmd = "make config=" + conf;
+            std::system(cmd.c_str());
+        }
+        else {
+            __SET_PATTERN_COL__;
+            LOG_ERROR("Invalid build configuration\n");
+            EXIT_EXECUTION;
+        }
+    }
+    else {
+        __SET_PATTERN_COL__;
+        LOG_ERROR("Makefile Does Not Exist\n");
+        EXIT_EXECUTION;
+    }
+}
+
+void cusp::cusp_update() {
+    
+    if (updatePreconditions()) {
+        Solution workspace;
+        workspace.deserializeCuspDotJson();
+        workspace.generatePremakeFiles();
+    }
+    else {
         __SET_PATTERN_COL__;
         LOG_ERROR("Project Configuration File Does Not Exist\n");
         EXIT_EXECUTION;

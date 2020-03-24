@@ -75,22 +75,13 @@ void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial
 
 
 void Solution::serializeCuspDotJson(csref path) const {
-    nlohmann::json tree;
-    tree["workspace"]       =        this->solution_name;
-    tree["architecture"]    =        this->architecture;
-    tree["author"]          =        this->author_name;
-    tree["toolset"]         =        this->toolset;
-    tree["cppdialect"]      =        this->cppDialect;
-    std::for_each(std::begin(projects),std::end(projects),[&](const Project& proj){
-        tree["projects"][proj.Name()] = proj.getTree();         
-    });
 
+    auto tree = this->getPropertiesJson();
     std::ofstream out(path);
     if(out.is_open()){
         out<<tree<<std::endl;
         out.close();
-        cuspParser parser(tree);
-        parser.generatePremakeFiles();
+        generatePremakeFiles(std::move(tree));
     }
     else{
         __SET_PATTERN_COL__;
@@ -136,6 +127,33 @@ void Solution::serializeCuspDotJson(csref path) const {
                 LOG_ERROR("Git was not found in your Path\n");
             }
         }
+    }
+
+    void Solution::generatePremakeFiles(nlohmann::json tree) const
+    {
+        cuspParser parser(std::move(tree));
+        parser.generatePremakeFiles();
+    }
+
+    void Solution::generatePremakeFiles() const
+    {
+        auto tree = this->getPropertiesJson();
+        cuspParser parser(std::move(tree));
+        parser.generatePremakeFiles();
+    }
+
+    nlohmann::json Solution::getPropertiesJson() const
+    {
+        nlohmann::json tree;
+        tree["workspace"] = this->solution_name;
+        tree["architecture"] = this->architecture;
+        tree["author"] = this->author_name;
+        tree["toolset"] = this->toolset;
+        tree["cppdialect"] = this->cppDialect;
+        std::for_each(std::begin(projects), std::end(projects), [&](const Project& proj) {
+            tree["projects"][proj.Name()] = proj.getTree();
+            });
+        return tree;
     }
 
     

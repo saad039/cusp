@@ -25,13 +25,21 @@ namespace cusp
 {
     static const std::string confFile= "Cusp.json";
     extern bool premake_precondition();
-    extern bool checkAddOperationPreconditions();
+    extern bool IDEPreconditions();
+    extern bool buildPreconditions();
+    extern bool addOperationPreconditions();
+    extern bool updatePreconditions(); 
+
     extern void cusp_init_wizard();
     extern void cusp_add_project(Solution& workspace);
     extern void cusp_add_header_file(Solution& workspace, const std::string& project,const std::string& name);
     extern void cusp_add_source_file(Solution& workspace, const std::string& project,const std::string& name);
     extern void cusp_add_class(Solution& workspace, const std::string& project,const std::string& name);
     extern void cusp_add_wizard(const std::vector<std::string>& commands);
+    
+    extern void cusp_generate_sln_files(const std::string& ide); //generates visual studio 2015,17,19 and xcode4 solution files and make files
+    extern void cusp_build_project(const std::string& conf);
+    extern void cusp_update();
 
 } // namespace cusp
 

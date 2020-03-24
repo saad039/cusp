@@ -20,7 +20,8 @@ class Solution
         std::vector<Project>        projects;
 
         static const std::string configuationFile;
-
+        nlohmann::json getPropertiesJson() const;
+        void generatePremakeFiles(nlohmann::json tree) const;
     public:
         Solution()=default;
         void init(csref sln,csref proj, csref arch, csref tlset, csref cppDial, csref type,
@@ -37,6 +38,8 @@ class Solution
         void generateNewProjectDirectories(csref pjName) const;
         bool checkCuspInitPreconditions()       const; 
         void initGitRepo(bool initGit) const;
+        void generatePremakeFiles() const;
+ 
         
 };
     
