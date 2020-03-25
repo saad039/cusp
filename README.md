@@ -1,7 +1,6 @@
 # cusp
 
-_A simple and easy to use command line project manager for C++ based on [premake](https://premake.github.io/)_
-
+_A simple and easy to use command line project manager for C++ based on premake_
 
 
 ## Prerequisites

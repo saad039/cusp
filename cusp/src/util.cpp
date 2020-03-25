@@ -78,7 +78,7 @@ std::map<std::wstring, std::wstring> util::getEnvironmentVars() {
         name = pValue + value.length() + 1;
     }
 #elif defined unix || __unix || __unix__
-#include<stdlib.h>
+#include<cstdlib>
     std::array<char, 128> buffer;
     std::string result;
     const char* cmd = "whereis git";
@@ -100,9 +100,10 @@ std::map<std::wstring, std::wstring> util::getEnvironmentVars() {
     })!=std::end(tokens))
         env[L"Path"] = L"Git";
     
+#endif
     return env;
 }
-#endif
+
 
 
 
