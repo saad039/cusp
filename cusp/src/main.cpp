@@ -34,8 +34,8 @@ int main(int argc, char const *argv[]){
             cusp::cusp_generate_sln_files(arg);
         }
         else if (arg == "build") { //for generating project builds using make
-            const auto& buildConf = commands[2];
-            cusp::cusp_build_project(buildConf);
+            
+            cusp::cusp_build_project(commands);
         
         }
         else if (arg == "update") {

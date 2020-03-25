@@ -94,20 +94,23 @@ std::string cuspParser::getIncludeFilesPath(const std::string& projectName)
 	return std::string("include/");
 }
 
-//( "copy C:\\Users\\mwkan\\Desktop\\nlp\\ngrams\\bin\\%{cfg.buildcfg}\\ngrams.dll C:\\Users\\mwkan\\Desktop\\nlp\\driver\\bin\\%{cfg.buildcfg}\\ngrams.dll" )
 std::string cuspParser::getCopyIntoBinCommand(const std::string& src, const std::string& dst) {
+
 #if defined _WIN32 || _WIN64
-	constexpr auto slash = R"(\)";
 	std::string cwd = std::filesystem::current_path().string();
-	//cwd = util::replaceAll(cwd, R"(\)", slash);
-	std::string srcPath = cwd + slash + src + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
-	std::string dstPath = cwd + slash + dst + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
-	return ("copy " + srcPath + " " + dstPath);
-#elif defined __APPLE__ || __MACH__
-	constexpr auto copyCommand = R("/bin/premake5");
+	std::string slash;
+	std::string srcPath;
+	std::string dstPath;
+	std::string copy;
+	slash = R"(\)";
+	srcPath = cwd + slash + src + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
+	dstPath = cwd + slash + dst + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
+	copy = "copy ";
+	return (copy + srcPath + " " + dstPath);
 #elif defined unix || __unix || __unix__
-	constexpr auto copyCommand = "/bin/premake5";
+	return std::string();
 #endif
+	
 }
 
 std::vector<std::string> cuspParser::getPostBuildCommands(const Project& project, const std::vector<std::string>& sharedLibs) {

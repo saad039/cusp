@@ -38,7 +38,7 @@ namespace cusp
     extern void cusp_add_wizard(const std::vector<std::string>& commands);
     
     extern void cusp_generate_sln_files(const std::string& ide); //generates visual studio 2015,17,19 and xcode4 solution files and make files
-    extern void cusp_build_project(const std::string& conf);
+    extern void cusp_build_project(const std::vector<std::string>& conf);
     extern void cusp_update();
 
 } // namespace cusp

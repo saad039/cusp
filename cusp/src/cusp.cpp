@@ -140,11 +140,13 @@ void cusp::cusp_generate_sln_files(const std::string& ide) {
     }
 }
 
-void cusp::cusp_build_project(const std::string& conf) {
+void cusp::cusp_build_project(const std::vector<std::string>& conf) {
     if (buildPreconditions()) {
-        if (conf == "debug" || conf == "release") {
-            std::string cmd = "make config=" + conf;
-            std::system(cmd.c_str());
+        if (conf.size()>2){
+            if (conf[2] == "debug" || conf[2] == "release") {
+                std::string cmd = "make config=" + conf[2];
+                std::system(cmd.c_str());
+            }
         }
         else {
             __SET_PATTERN_COL__;

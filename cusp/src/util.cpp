@@ -1,5 +1,6 @@
 #include "cusppch.h"
 #include "util.h"
+#include<array>
 std::vector<std::string> util::tokenizer(const std::string &str, const char delimeter)
 {
     std::vector<std::string> tokens;
@@ -57,8 +58,8 @@ std::string util::replaceAll(std::string str, const std::string& from, const std
 }
 
 std::map<std::wstring, std::wstring> util::getEnvironmentVars() {
-
-    std::map<std::wstring, std::wstring> env;
+     std::map<std::wstring, std::wstring> env;
+#if defined _WIN32 || _WIN64
     auto free = [](wchar_t* p) { FreeEnvironmentStrings(p); };
 
     auto env_block = std::unique_ptr<wchar_t, decltype(free)>{
@@ -76,6 +77,33 @@ std::map<std::wstring, std::wstring> util::getEnvironmentVars() {
 
         name = pValue + value.length() + 1;
     }
-
+#elif defined unix || __unix || __unix__
+#include<stdlib.h>
+    std::array<char, 128> buffer;
+    std::string result;
+    const char* cmd = "whereis git";
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+#ifdef DEBUG
+        throw std::runtime_error("popen failed");
+#elif defined NDEBUG
+        LOG_ERROR("Internal Error\n");
+#endif
+}
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    auto tokens = util::tokenizer(result,':');
+    if (std::find_if(std::begin(tokens) + 1,std::end(tokens),
+        [&](const std::string& target){
+            return target.find("git");
+    })!=std::end(tokens))
+        env[L"Path"] = L"Git";
+    
     return env;
 }
+#endif
+
+
+
+
