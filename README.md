@@ -1,8 +1,8 @@
 # cusp
 
-_A simple and easy to use command line project manager for C++_
+_A simple and easy to use command line project manager for C++ based on [premake](https://premake.github.io/)_
 
-  
+
 
 ## Prerequisites
 
@@ -25,6 +25,7 @@ Clone the repository to a local destination and make sure to fetch all dependenc
 
 > ```git clone --recursive https://github.com/saad039/cusp```
 
+Make sure that you set the default spdlog's eol in ```cusp/dependencies/spdlog/include/spdlog/tweakme.h``` from ```#define SPDLOG_EOL ";-)\n"``` to ```#define SPDLOG_EOL ""```
   
   
 
