@@ -243,3 +243,8 @@ void Solution::serializeCuspDotJson(csref path) const {
             LOG_WARNING("Project Not Found\n");
         }
     }
+
+
+    const std::string& Solution::getSolutionName() const{
+        return this->solution_name;
+    }

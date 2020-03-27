@@ -26,10 +26,10 @@ namespace cusp
     static const std::string confFile= "Cusp.json";
     extern bool premake_precondition();
     extern bool IDEPreconditions();
-    extern bool buildPreconditions();
+    extern bool buildPreconditions(const std::string& solution);
     extern bool addOperationPreconditions();
     extern bool updatePreconditions(); 
-    
+    extern bool msBuildPreconditions();
     extern void cusp_init_wizard();
     extern void cusp_add_project(Solution& workspace);
     extern void cusp_add_header_file(Solution& workspace, const std::string& project,const std::string& name);

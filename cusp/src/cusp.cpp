@@ -15,8 +15,12 @@ bool cusp::IDEPreconditions() {
     return std::filesystem::exists(confFile) && std::filesystem::exists("premake5.lua");
 }
 
-bool cusp::buildPreconditions() {
+bool cusp::buildPreconditions(const std::string& solution) {
+#if defined _WIN32 || _WIN64
+    return msBuildPreconditions() && std::filesystem::exists(solution+".sln");
+#elif defined unix || __unix || __unix__
     return std::filesystem::exists("Makefile");
+#endif
 }
 
 bool cusp::updatePreconditions() {
@@ -140,10 +144,17 @@ void cusp::cusp_generate_sln_files(const std::string& ide) {
 }
 
 void cusp::cusp_build_project(const std::vector<std::string>& conf) {
-    if (buildPreconditions()) {
+    Solution workspace;
+    workspace.deserializeCuspDotJson();
+    if (buildPreconditions(workspace.getSolutionName())) {
         if (conf.size()>2){
             if (conf[2] == "debug" || conf[2] == "release") {
+#if defined _WIN32 || _WIN64
+                std::string config = conf[2]=="debug" ? "Debug" : "Release";
+                std::string cmd = "msbuild -property:Configuration=" + config;
+#elif defined unix || __unix || __unix__
                 std::string cmd = "make config=" + conf[2];
+#endif
                 std::system(cmd.c_str());
             }
         }
@@ -155,7 +166,11 @@ void cusp::cusp_build_project(const std::vector<std::string>& conf) {
     }
     else {
         __SET_PATTERN_COL__;
+#if defined _WIN32 || _WIN64
+        LOG_ERROR("MSbuild or sln file does not exist\n");
+#elif defined unix || __unix || __unix__
         LOG_ERROR("Makefile Does Not Exist\n");
+#endif
         EXIT_EXECUTION;
     }
 }
@@ -173,7 +188,9 @@ void cusp::cusp_update() {
         EXIT_EXECUTION;
     }
 }
-
+bool cusp::msBuildPreconditions(){
+    return util::getWinEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos;
+}
 
 void cusp::generateVSCodeConfigurations(){
   
@@ -192,7 +209,7 @@ void cusp::generateVSCodeConfigurations(){
         nlohmann::json tasksJson;
         tasksJson["version"] = "2.0.0";
 #if defined _WIN32 || _WIN64
-        if (util::getWinEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos) {    
+        if (msBuildPreconditions()) {    
             tasksJson["tasks"] = getTasksJson(buildSys);
         }   
         else {
