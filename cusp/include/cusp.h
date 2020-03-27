@@ -8,15 +8,15 @@ constexpr auto premakePath = R("/bin/premake5");
 constexpr auto premakePath = "/bin/premake5";
 #endif
 
-#if     __cplusplus     ==   199711L
-#define __cpp98__       
-#elif   __cplusplus     ==   201103L
-#define __cpp11__       
-#elif   __cplusplus     ==   201402L
-#define __cpp14__       
-#elif   __cplusplus     ==   201703L
-#define __cpp17__
-#endif
+//#if     __cplusplus     ==   199711L
+//#define __cpp98__       
+//#elif   __cplusplus     ==   201103L
+//#define __cpp11__       
+//#elif   __cplusplus     ==   201402L
+//#define __cpp14__       
+//#elif   __cplusplus     ==   201703L
+//#define __cpp17__
+//#endif
 
 #include"solution.h"
 
@@ -40,6 +40,8 @@ namespace cusp
     extern void cusp_generate_sln_files(const std::string& ide); //generates visual studio 2015,17,19 and xcode4 solution files and make files
     extern void cusp_build_project(const std::vector<std::string>& conf);
     extern void cusp_update();
+
+    extern void generateVSCodeConfigurations();
 
 } // namespace cusp
 

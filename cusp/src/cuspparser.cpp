@@ -172,7 +172,7 @@ tsl::ordered_map<std::string, std::variant<std::string, std::vector<std::string>
 	const auto headers  = this->getIncludeFilesPath(project.Name());
 	const auto srcFiles = this->getSourceFilesPath(project.Name());
 
-	cfg["files"] = std::vector<std::string>{headers+"**.h" ,headers + "**.hpp",srcFiles + "**.cc",srcFiles + "**.cpp" };
+	cfg["files"] = std::vector<std::string> { headers+"**.h" ,headers + "**.hpp",srcFiles + "**.cc",srcFiles + "**.cpp" };
 
 	cfg["includedirs"] = this->getIncludeDirectoriesPaths(project);
 	const auto libsToLink = this->getProjectsToLinkTo(project);

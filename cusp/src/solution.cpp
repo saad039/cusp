@@ -160,15 +160,16 @@ void Solution::serializeCuspDotJson(csref path) const {
 
     void Solution::generateProjectDirectories(csref path,csref pjName) const{
         try{
-            std::filesystem::create_directories( path+'/'+pjName                );
-            std::filesystem::create_directories( path+'/'+pjName+'/'+"include"  );
-            std::filesystem::create_directories( path+'/'+pjName+'/'+"src"      );
+            if (!(
+                std::filesystem::create_directories(path + '/' + pjName)                    &&
+                std::filesystem::create_directories(path + '/' + pjName + '/' + "include")  &&
+                std::filesystem::create_directories(path + '/' + pjName + '/' + "src")
+                ))
+            throw std::runtime_error("");
         }
-        catch(const std::exception& e)
+        catch(const std::exception&)
         {
-            
             __SET_PATTERN_COL__;
-            LOG_ERROR(e.what()+'\n');
             LOG_ERROR("failed to create project directories\n");
             EXIT_EXECUTION;
         }

@@ -174,3 +174,10 @@ void cusp::cusp_update() {
         EXIT_EXECUTION;
     }
 }
+
+void cusp::generateVSCodeConfigurations()
+{
+    const std::string  dir = ".vscode";
+    std::filesystem::create_directories(dir);
+
+}
