@@ -34,7 +34,7 @@ void cusp::cusp_init_wizard(){
     const auto  libs                =      inputHandler::libsTolinks();
     const auto  author_name         =      inputHandler::author();
     const auto  license             =      inputHandler::MITLicense(util::timeStamp()["year"],author_name);
-    const auto  enableGit           = inputHandler::initializeGitRepository();
+    const auto  enableGit           =      inputHandler::initializeGitRepository();
     workspace.init(
         solution_name,project_name,architecture,toolset,cppDialect,kind,libs,author_name,enableGit
     );
@@ -117,8 +117,7 @@ void cusp::cusp_add_wizard(const std::vector<std::string>& commands){
     }
     else{
         __SET_PATTERN_COL__;
-        LOG_ERROR("Project Configuration File Does Not Exist\n");
-        EXIT_EXECUTION;
+        LOG_ERROR("Project Configuration(Cusp.json) File Does Not Exist\n");
     }
 }
 
@@ -135,7 +134,7 @@ void cusp::cusp_generate_sln_files(const std::string& ide) {
     }
     else {
         __SET_PATTERN_COL__;
-        LOG_ERROR("Project Configuration or Premake5.lua Does Not Exist\n");
+        LOG_ERROR("Project Configuration(Cusp.json)  or Premake5.lua Does Not Exist\n");
         EXIT_EXECUTION;
     }
 }
@@ -170,14 +169,90 @@ void cusp::cusp_update() {
     }
     else {
         __SET_PATTERN_COL__;
-        LOG_ERROR("Project Configuration File Does Not Exist\n");
+        LOG_ERROR("Project Configuration(Cusp.json)  File Does Not Exist\n");
         EXIT_EXECUTION;
     }
 }
 
-void cusp::generateVSCodeConfigurations()
-{
-    const std::string  dir = ".vscode";
-    std::filesystem::create_directories(dir);
+template<typename... Args>
+void LOGERROR(const Args... args) {
+    __SET_PATTERN_COL__;
+    LOG_ERROR(args...);
+}
+void cusp::generateVSCodeConfigurations(){
+  
+    if (std::filesystem::exists(confFile)) {
+        Solution workspace;
+        workspace.deserializeCuspDotJson();
+        const std::string  dir = ".vscode";
+        auto compiler = workspace.getToolset();
+        
+        if (!std::filesystem::exists(dir)) {
+            if (!std::filesystem::create_directory(dir)) {
+                __SET_PATTERN_COL__;
+                LOG_ERROR("Failed to create configuration files for vscode");
+                return;
+            }
+        }
+        
+#if defined _WIN32 || _WIN64
+        if (util::getEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos) {
+            nlohmann::json tasksJson;
+            tasksJson["version"] = "2.0.0";
+            tasksJson["tasks"] = getTasksJson(compiler);
+            std::ofstream out(dir + "/tasks.json");
+            if (out.is_open()) {
+                out << tasksJson << std::endl;
+                __SET_PATTERN_COL__;
+                LOG_INFO("Created tasks.json for vscode\n");
+                LOG_INFO("Make sure to generate sln file.cusp vs2015|vs2017|vs2019 to generate sln file\n");
+            }
+            else {
+                __SET_PATTERN_COL__;
+                LOG_ERROR("Failed to create tasks.json for vscode\n");
+            }
+        }
+        else {
+            __SET_PATTERN_COL__;
+            LOG_ERROR("MSBuild was not found in your path\n");
+        }
+#elif defined unix || __unix || __unix__
+
+#endif
+    }
+    else {
+        __SET_PATTERN_COL__;
+        LOG_ERROR("Project Configuration(Cusp.json) Does Not Exist\n");
+    }
+}
+
+std::vector<nlohmann::json> cusp::getTasksJson(const std::string& compiler) {
+    std::vector<nlohmann::json> tasks;
+#if defined _WIN32 || _WIN64
+        
+    tasks.push_back(cusp::getTask("Debug", "-property:Configuration=Debug", compiler));
+    tasks.push_back(cusp::getTask("Release", "-property:Configuration=Release", compiler));
+
+#elif defined unix || __unix || __unix__
+
+#endif
+        return tasks;
 
 }
+nlohmann::json cusp::getTask(const std::string& label,const std::string& command, const std::string& compiler)
+{
+    nlohmann::json task;
+    task["label"] = label + " Build";
+    task["type"] = "shell";
+    task["command"] = compiler;
+    task["args"] = std::vector<std::string>{ "/property:GenerateFullPaths=true",
+                                             "/t:build",
+                                             "/consoleloggerparameters:NoSummary",
+                                              command };
+    task["group"] = "build";
+
+    task["presentation"] = nlohmann::json()["reveal"] = "silent";
+    task["problemMatcher"] = "$msCompile";
+    return task;
+}
+

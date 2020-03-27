@@ -21,9 +21,6 @@ int main(int argc, char const *argv[]){
         else if (arg == "add") {
             cusp::cusp_add_wizard(commands);
         }
-        else if (arg == "vscode") {  //for vscode
-
-        }
         else if (arg == "vs2015" || arg == "vs2017" || arg == "vs2019") { //for visual studio 
             cusp::cusp_generate_sln_files(arg);
         }
@@ -35,17 +32,19 @@ int main(int argc, char const *argv[]){
         }
         else if (arg == "build") { //for generating project builds using make
             cusp::cusp_build_project(commands);
-        
         }
         else if (arg == "update") {
             cusp::cusp_update();
+        }
+        else if (arg == "vscode") {
+            cusp::generateVSCodeConfigurations();
         }
         else{
             __SET_PATTERN_COL__;
             LOG_ERROR("cusp -h for more information\n");
         }
     }
-    else{
+    else {
         __SET_PATTERN_COL__;
         LOG_ERROR("Fatal error.Premake does not exist in path\n");
     }
