@@ -39,7 +39,7 @@ class Solution
         bool checkCuspInitPreconditions()                                                            const;  
         void initGitRepo(bool initGit)                                                               const;
         void generatePremakeFiles()                                                                  const;
-        const std::string& getToolset()                                                              const;
+        std::string getToolset()                                                              const;
         
 };
     

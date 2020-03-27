@@ -29,7 +29,7 @@ namespace cusp
     extern bool buildPreconditions();
     extern bool addOperationPreconditions();
     extern bool updatePreconditions(); 
-
+    
     extern void cusp_init_wizard();
     extern void cusp_add_project(Solution& workspace);
     extern void cusp_add_header_file(Solution& workspace, const std::string& project,const std::string& name);

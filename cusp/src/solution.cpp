@@ -142,10 +142,11 @@ void Solution::serializeCuspDotJson(csref path) const {
         parser.generatePremakeFiles();
     }
 
-	const std::string& Solution::getToolset() const
+	std::string Solution::getToolset() const
 	{
         if (this->toolset == "msc")
             return "msbuild";
+        return "make";
 	}
 
     nlohmann::json Solution::getPropertiesJson() const

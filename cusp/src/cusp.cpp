@@ -174,19 +174,14 @@ void cusp::cusp_update() {
     }
 }
 
-template<typename... Args>
-void LOGERROR(const Args... args) {
-    __SET_PATTERN_COL__;
-    LOG_ERROR(args...);
-}
+
 void cusp::generateVSCodeConfigurations(){
   
-    if (std::filesystem::exists(confFile)) {
+    if (cusp::IDEPreconditions()) {
         Solution workspace;
         workspace.deserializeCuspDotJson();
         const std::string  dir = ".vscode";
         auto compiler = workspace.getToolset();
-        
         if (!std::filesystem::exists(dir)) {
             if (!std::filesystem::create_directory(dir)) {
                 __SET_PATTERN_COL__;
@@ -194,8 +189,6 @@ void cusp::generateVSCodeConfigurations(){
                 return;
             }
         }
-        
-#if defined _WIN32 || _WIN64
         if (util::getEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos) {
             nlohmann::json tasksJson;
             tasksJson["version"] = "2.0.0";
@@ -211,16 +204,14 @@ void cusp::generateVSCodeConfigurations(){
                 __SET_PATTERN_COL__;
                 LOG_ERROR("Failed to create tasks.json for vscode\n");
             }
-        }
+        }   
         else {
             __SET_PATTERN_COL__;
             LOG_ERROR("MSBuild was not found in your path\n");
         }
-#elif defined unix || __unix || __unix__
-
-#endif
     }
     else {
+        std::cout<<"conidtions not met"<<std::endl;
         __SET_PATTERN_COL__;
         LOG_ERROR("Project Configuration(Cusp.json) Does Not Exist\n");
     }
@@ -250,8 +241,6 @@ nlohmann::json cusp::getTask(const std::string& label,const std::string& command
                                              "/consoleloggerparameters:NoSummary",
                                               command };
     task["group"] = "build";
-
-    task["presentation"] = nlohmann::json()["reveal"] = "silent";
     task["problemMatcher"] = "$msCompile";
     return task;
 }
