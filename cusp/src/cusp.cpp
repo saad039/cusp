@@ -181,7 +181,7 @@ void cusp::generateVSCodeConfigurations(){
         Solution workspace;
         workspace.deserializeCuspDotJson();
         const std::string  dir = ".vscode";
-        auto compiler = workspace.getToolset();
+        auto buildSys = workspace.getBuildSystem();
         if (!std::filesystem::exists(dir)) {
             if (!std::filesystem::create_directory(dir)) {
                 __SET_PATTERN_COL__;
@@ -189,59 +189,65 @@ void cusp::generateVSCodeConfigurations(){
                 return;
             }
         }
-        if (util::getEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos) {
-            nlohmann::json tasksJson;
-            tasksJson["version"] = "2.0.0";
-            tasksJson["tasks"] = getTasksJson(compiler);
-            std::ofstream out(dir + "/tasks.json");
-            if (out.is_open()) {
-                out << tasksJson << std::endl;
-                __SET_PATTERN_COL__;
-                LOG_INFO("Created tasks.json for vscode\n");
-                LOG_INFO("Make sure to generate sln file.cusp vs2015|vs2017|vs2019 to generate sln file\n");
-            }
-            else {
-                __SET_PATTERN_COL__;
-                LOG_ERROR("Failed to create tasks.json for vscode\n");
-            }
+        nlohmann::json tasksJson;
+        tasksJson["version"] = "2.0.0";
+#if defined _WIN32 || _WIN64
+        if (util::getWinEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos) {    
+            tasksJson["tasks"] = getTasksJson(buildSys);
         }   
         else {
             __SET_PATTERN_COL__;
             LOG_ERROR("MSBuild was not found in your path\n");
         }
+#elif defined unix || __unix || __unix__
+    tasksJson["tasks"] = getTasksJson(buildSys);
+#endif
+        std::ofstream out(dir + "/tasks.json");
+        if (out.is_open()) {
+            out << tasksJson << std::endl;
+            __SET_PATTERN_COL__;
+            LOG_INFO("Created tasks.json for vscode\n");
+            LOG_INFO("Use makefiles for unix based operating systems and sln for Windows\n");
+        }
+        else {
+            __SET_PATTERN_COL__;
+            LOG_ERROR("Failed to create tasks.json for vscode\n");
+        }
     }
     else {
-        std::cout<<"conidtions not met"<<std::endl;
         __SET_PATTERN_COL__;
         LOG_ERROR("Project Configuration(Cusp.json) Does Not Exist\n");
     }
 }
 
-std::vector<nlohmann::json> cusp::getTasksJson(const std::string& compiler) {
+std::vector<nlohmann::json> cusp::getTasksJson(const std::string& buildSys) {
     std::vector<nlohmann::json> tasks;
 #if defined _WIN32 || _WIN64
         
-    tasks.push_back(cusp::getTask("Debug", "-property:Configuration=Debug", compiler));
-    tasks.push_back(cusp::getTask("Release", "-property:Configuration=Release", compiler));
+    tasks.push_back(cusp::getTask("Debug", "-property:Configuration=Debug", buildSys));
+    tasks.push_back(cusp::getTask("Release", "-property:Configuration=Release", buildSys));
 
 #elif defined unix || __unix || __unix__
-
+    tasks.push_back(cusp::getTask("Debug",   "", buildSys+" config=debug"));
+    tasks.push_back(cusp::getTask("Release", "", buildSys+" config=release"));
 #endif
         return tasks;
 
 }
-nlohmann::json cusp::getTask(const std::string& label,const std::string& command, const std::string& compiler)
+nlohmann::json cusp::getTask(const std::string& label,const std::string& command, const std::string& buildSys)
 {
     nlohmann::json task;
     task["label"] = label + " Build";
     task["type"] = "shell";
-    task["command"] = compiler;
+    task["command"] = buildSys;
+#if defined _WIN32 || _WIN64
     task["args"] = std::vector<std::string>{ "/property:GenerateFullPaths=true",
                                              "/t:build",
                                              "/consoleloggerparameters:NoSummary",
                                               command };
     task["group"] = "build";
     task["problemMatcher"] = "$msCompile";
+#endif
     return task;
 }
 

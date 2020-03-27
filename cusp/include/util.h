@@ -17,7 +17,8 @@ namespace util {
     extern std::string plainTimeStamp();
     extern std::map<std::string, std::string> timeStamp();
     extern std::string replaceAll(std::string str, const std::string& from, const std::string& to);
-    extern std::map<std::wstring, std::wstring> getEnvironmentVars();
+    extern std::map<std::wstring, std::wstring> getWinEnvironmentVars();
+    extern std::string whereIs(const std::string& bin);
 
     template<typename Callable>
     std::string takeConsoleInput(Callable logMessage){

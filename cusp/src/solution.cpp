@@ -97,8 +97,11 @@ void Solution::serializeCuspDotJson(csref path) const {
     void Solution::initGitRepo(bool initGit) const
     {
         if (initGit) {
-
-            if (util::getEnvironmentVars()[L"Path"].find(L"Git") != std::string::npos) {
+#if defined _WIN32 || _WIN64
+            if (util::getWinEnvironmentVars()[L"Path"].find(L"Git") != std::string::npos) {
+#elif defined unix || __unix || __unix__
+            if(util::whereIs("git").find("/usr/bin/git")!=std::string::npos){
+#endif
                 const std::string cmd = "cd " + this->solution_name + " && git init";
                 std::system(cmd.c_str()); //initialised git repository
                 std::stringstream stream;
@@ -142,7 +145,7 @@ void Solution::serializeCuspDotJson(csref path) const {
         parser.generatePremakeFiles();
     }
 
-	std::string Solution::getToolset() const
+	std::string Solution::getBuildSystem() const
 	{
         if (this->toolset == "msc")
             return "msbuild";
