@@ -9,8 +9,7 @@
 #include"ordered_map.h"
 
 // Cusp parser's sole job is to convert cusp.json to premake5.lua
-class cuspParser
-{
+class cuspParser {
 	using Json = nlohmann::json;
 	
 private:
