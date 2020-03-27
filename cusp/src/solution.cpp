@@ -17,7 +17,7 @@ void Solution::init(csref sln,csref proj, csref arch, csref tlset, csref cppDial
     {
         std::filesystem::create_directory(solution_name);
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
         __SET_PATTERN_COL__;
         LOG_ERROR("Failed To Create Solution Directory\n");
@@ -198,7 +198,7 @@ void Solution::serializeCuspDotJson(csref path) const {
             out<<"#pragma once"<<"\n"; 
             out.close();
         }
-        catch(const std::exception& e)
+        catch(const std::exception&)
         {
             __SET_PATTERN_COL__;
             LOG_WARNING("Failed To add Header File\n");
@@ -213,7 +213,7 @@ void Solution::serializeCuspDotJson(csref path) const {
             std::ofstream out(filePath);
             out.close();
         }
-        catch(const std::exception& e)
+        catch(const std::exception&)
         {
             __SET_PATTERN_COL__;
             LOG_WARNING("Failed To add Source File\n");
