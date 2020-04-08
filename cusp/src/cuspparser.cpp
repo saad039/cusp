@@ -71,17 +71,17 @@ std::vector<std::string> cuspParser::getProjectNames()
 
 std::string cuspParser::getTargetDirectoryPath(const std::string& projectName)
 {
-	return std::string("bin/%{cfg.buildcfg}");
+	return std::string("../bin/%{prj.name}/%{cfg.buildcfg}");
 }
 
 std::string cuspParser::getObjectDirectoryPath(const std::string& projectName)
 {
-	return std::string("bin-init/%{cfg.buildcfg}");
+	return std::string("../bin-init/%{prj.name}/%{cfg.buildcfg}");
 }
 
 std::string cuspParser::getBuildDataLocation(const std::string& projectName)
 {
-	return std::string("build");
+	return std::string("../build/%{prj.name}");
 }
 
 std::string cuspParser::getSourceFilesPath(const std::string& projectName)
@@ -93,7 +93,7 @@ std::string cuspParser::getIncludeFilesPath(const std::string& projectName)
 {
 	return std::string("include/");
 }
-
+//src is the project compiled as a dll and dst is the one who will link against it
 std::string cuspParser::getCopyIntoBinCommand(const std::string& src, const std::string& dst) {
 
 #if defined _WIN32 || _WIN64
@@ -103,8 +103,8 @@ std::string cuspParser::getCopyIntoBinCommand(const std::string& src, const std:
 	std::string dstPath;
 	std::string copy;
 	slash = R"(\)";
-	srcPath = cwd + slash + src + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
-	dstPath = cwd + slash + dst + slash + "bin" + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
+	srcPath = cwd + slash + "bin" + slash + src + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
+	dstPath = cwd + slash + "bin" + slash + dst + slash + "%{cfg.buildcfg}" + slash + src + ".dll";
 	copy = "copy ";
 	return (copy + srcPath + " " + dstPath);
 #elif defined unix || __unix || __unix__
