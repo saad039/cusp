@@ -8,8 +8,7 @@ bool cusp::premake_precondition(){
     auto paths = util::getEnvironmentVars();
     for(const auto& p : paths)
         if(std::get_if<std::string>(&p))
-            if(std::filesystem::exists(std::get<std::string>(p)+"/premake5")){
-                
+            if(std::filesystem::exists(util::replaceAll(std::get<std::string>(p),"\n","")+"/premake5")){
                 premakeExist = true;
                 break;
             }

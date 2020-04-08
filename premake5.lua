@@ -36,7 +36,10 @@ project "spdlog"
         "dependencies/spdlog/include"
     }
 
-    
+    links{
+        "pthread"
+    }
+
 
     filter "configurations:Debug"
         defines { "DEBUG" }
