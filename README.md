@@ -1,6 +1,6 @@
 # cusp
 
-_A simple and easy to use command line project manager for C++ based on premake_
+_A simple and easy to use command line build tool for C++ based on premake_
 
 
 ## Prerequisites
@@ -59,7 +59,7 @@ Make sure that you set the default spdlog's eol in ```cusp/dependencies/spdlog/i
 | cusp add ```projectName``` header ```head.h or head.hpp``` | Adds head.h/hpp header file into the project projectName under your solution directory. |
 | cusp add ```projectName``` src ```src.cc or src.cpp``` | Adds src.cc/cpp source file into the project projectName under your solution directory. |
 | cusp add ```projectName``` class ```className``` | Adds className.h and className.cpp header and source files into the project projectName under your solution directory. |
-|cusp update | Regenerates premake5.lua for all projects and solution. This should be used if changes were made to ```cusp.json``` manually. |
+|cusp update | Regenerates premake5.lua for all projects and solution. This should be used if changes were made to ```cusp.json``` manually. Note that any changes made to ```premake5.lua``` files manually will be lost. |
 |cusp make | Generates makefiles for all projects and solution. |
 |cusp vs2015|Generates visual studio 2015 solution files for all projects and solution. |
 |cusp vs2017|Generates visual studio 2015 solution files for all projects and solution. |

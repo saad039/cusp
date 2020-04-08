@@ -52,7 +52,7 @@ project "spdlog"
 project "ordered-map"
     
     location "build/ordered-map"
-    kind "Staticlib"
+    kind "StaticLib"
     language"C++"
     toolset "gcc"
     cppdialect "C++17"

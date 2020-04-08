@@ -3,7 +3,6 @@
 
 
 bool cusp::premake_precondition(){
-    // return std::filesystem::exists(premakePath);
     bool premakeExist = false;
 #ifdef UNIX_CUSP
     auto paths = util::getEnvironmentVars();
@@ -25,8 +24,12 @@ bool cusp::IDEPreconditions() {
     return std::filesystem::exists(confFile) && std::filesystem::exists("premake5.lua");
 }
 
-bool cusp::buildPreconditions() {
+bool cusp::buildPreconditions(const std::string& solution) {
+#if defined _WIN32 || _WIN64
+    return msBuildPreconditions() && std::filesystem::exists(solution+".sln");
+#elif defined unix || __unix || __unix__
     return std::filesystem::exists("Makefile");
+#endif
 }
 
 bool cusp::updatePreconditions() {
@@ -44,7 +47,7 @@ void cusp::cusp_init_wizard(){
     const auto  libs                =      inputHandler::libsTolinks();
     const auto  author_name         =      inputHandler::author();
     const auto  license             =      inputHandler::MITLicense(util::timeStamp()["year"],author_name);
-    const auto  enableGit           = inputHandler::initializeGitRepository();
+    const auto  enableGit           =      inputHandler::initializeGitRepository();
     workspace.init(
         solution_name,project_name,architecture,toolset,cppDialect,kind,libs,author_name,enableGit
     );
@@ -127,8 +130,7 @@ void cusp::cusp_add_wizard(const std::vector<std::string>& commands){
     }
     else{
         __SET_PATTERN_COL__;
-        LOG_ERROR("Project Configuration File Does Not Exist\n");
-        EXIT_EXECUTION;
+        LOG_ERROR("Project Configuration(Cusp.json) File Does Not Exist\n");
     }
 }
 
@@ -145,16 +147,23 @@ void cusp::cusp_generate_sln_files(const std::string& ide) {
     }
     else {
         __SET_PATTERN_COL__;
-        LOG_ERROR("Project Configuration or Premake5.lua Does Not Exist\n");
+        LOG_ERROR("Project Configuration(Cusp.json)  or Premake5.lua Does Not Exist\n");
         EXIT_EXECUTION;
     }
 }
 
 void cusp::cusp_build_project(const std::vector<std::string>& conf) {
-    if (buildPreconditions()) {
+    Solution workspace;
+    workspace.deserializeCuspDotJson();
+    if (buildPreconditions(workspace.getSolutionName())) {
         if (conf.size()>2){
             if (conf[2] == "debug" || conf[2] == "release") {
+#if defined _WIN32 || _WIN64
+                std::string config = conf[2]=="debug" ? "Debug" : "Release";
+                std::string cmd = "msbuild -property:Configuration=" + config;
+#elif defined unix || __unix || __unix__
                 std::string cmd = "make config=" + conf[2];
+#endif
                 std::system(cmd.c_str());
             }
         }
@@ -166,7 +175,11 @@ void cusp::cusp_build_project(const std::vector<std::string>& conf) {
     }
     else {
         __SET_PATTERN_COL__;
+#if defined _WIN32 || _WIN64
+        LOG_ERROR("MSbuild or sln file does not exist\n");
+#elif defined unix || __unix || __unix__
         LOG_ERROR("Makefile Does Not Exist\n");
+#endif
         EXIT_EXECUTION;
     }
 }
@@ -180,7 +193,87 @@ void cusp::cusp_update() {
     }
     else {
         __SET_PATTERN_COL__;
-        LOG_ERROR("Project Configuration File Does Not Exist\n");
+        LOG_ERROR("Project Configuration(Cusp.json)  File Does Not Exist\n");
         EXIT_EXECUTION;
     }
 }
+bool cusp::msBuildPreconditions(){
+    return util::getWinEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos;
+}
+
+void cusp::generateVSCodeConfigurations(){
+  
+    if (cusp::IDEPreconditions()) {
+        Solution workspace;
+        workspace.deserializeCuspDotJson();
+        const std::string  dir = ".vscode";
+        auto buildSys = workspace.getBuildSystem();
+        if (!std::filesystem::exists(dir)) {
+            if (!std::filesystem::create_directory(dir)) {
+                __SET_PATTERN_COL__;
+                LOG_ERROR("Failed to create configuration files for vscode");
+                return;
+            }
+        }
+        nlohmann::json tasksJson;
+        tasksJson["version"] = "2.0.0";
+#if defined _WIN32 || _WIN64
+        if (msBuildPreconditions()) {    
+            tasksJson["tasks"] = getTasksJson(buildSys);
+        }   
+        else {
+            __SET_PATTERN_COL__;
+            LOG_ERROR("MSBuild was not found in your path\n");
+        }
+#elif defined unix || __unix || __unix__
+    tasksJson["tasks"] = getTasksJson(buildSys);
+#endif
+        std::ofstream out(dir + "/tasks.json");
+        if (out.is_open()) {
+            out << tasksJson << std::endl;
+            __SET_PATTERN_COL__;
+            LOG_INFO("Created tasks.json for vscode\n");
+            LOG_INFO("Use makefiles for unix based operating systems and sln for Windows\n");
+        }
+        else {
+            __SET_PATTERN_COL__;
+            LOG_ERROR("Failed to create tasks.json for vscode\n");
+        }
+    }
+    else {
+        __SET_PATTERN_COL__;
+        LOG_ERROR("Project Configuration(Cusp.json) Does Not Exist\n");
+    }
+}
+
+std::vector<nlohmann::json> cusp::getTasksJson(const std::string& buildSys) {
+    std::vector<nlohmann::json> tasks;
+#if defined _WIN32 || _WIN64
+        
+    tasks.push_back(cusp::getTask("Debug", "-property:Configuration=Debug", buildSys));
+    tasks.push_back(cusp::getTask("Release", "-property:Configuration=Release", buildSys));
+
+#elif defined unix || __unix || __unix__
+    tasks.push_back(cusp::getTask("Debug",   "", buildSys+" config=debug"));
+    tasks.push_back(cusp::getTask("Release", "", buildSys+" config=release"));
+#endif
+        return tasks;
+
+}
+nlohmann::json cusp::getTask(const std::string& label,const std::string& command, const std::string& buildSys)
+{
+    nlohmann::json task;
+    task["label"] = label + " Build";
+    task["type"] = "shell";
+    task["command"] = buildSys;
+#if defined _WIN32 || _WIN64
+    task["args"] = std::vector<std::string>{ "/property:GenerateFullPaths=true",
+                                             "/t:build",
+                                             "/consoleloggerparameters:NoSummary",
+                                              command };
+    task["group"] = "build";
+    task["problemMatcher"] = "$msCompile";
+#endif
+    return task;
+}
+
