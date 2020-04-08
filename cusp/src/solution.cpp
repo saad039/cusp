@@ -98,7 +98,7 @@ void Solution::serializeCuspDotJson(csref path) const {
     {
         if (initGit) {
 
-            if (util::getEnvironmentVars()[L"Path"].find(L"Git") != std::string::npos) {
+            if (util::getGitEnvironmentVars()[L"Path"].find(L"Git") != std::string::npos) {
                 const std::string cmd = "cd " + this->solution_name + " && git init";
                 std::system(cmd.c_str()); //initialised git repository
                 std::stringstream stream;
@@ -213,7 +213,7 @@ void Solution::serializeCuspDotJson(csref path) const {
             std::ofstream out(filePath);
             out.close();
         }
-        catch(const std::exception& e)
+        catch(const std::exception&)
         {
             __SET_PATTERN_COL__;
             LOG_WARNING("Failed To add Source File\n");

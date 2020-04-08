@@ -5,7 +5,7 @@ constexpr auto premakePath = "C://premake//premake5.exe";
 #elif defined __APPLE__ || __MACH__
 constexpr auto premakePath = R("/bin/premake5");
 #elif defined unix || __unix || __unix__
-constexpr auto premakePath = "/bin/premake5";
+#define UNIX_CUSP
 #endif
 
 #if     __cplusplus     ==   199711L

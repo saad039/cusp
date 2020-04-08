@@ -2,9 +2,19 @@
 #include"cusp.h"
 
 
-bool cusp::premake_precondition()
-{
-    return std::filesystem::exists(premakePath);
+bool cusp::premake_precondition(){
+    // return std::filesystem::exists(premakePath);
+    bool premakeExist = false;
+#ifdef UNIX_CUSP
+    auto paths = util::getEnvironmentVars();
+    for(const auto& p : paths)
+        if(std::get_if<std::string>(&p))
+            if(std::filesystem::exists(std::get<std::string>(p)+"/premake5")){
+                premakeExist = true;
+                break;
+            }
+#endif
+    return premakeExist;
 }
 
 bool cusp::addOperationPreconditions() { 

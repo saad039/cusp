@@ -1,5 +1,6 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
+#include<variant>
 
 #define ALL_COLOR_TEXT "%^%v%$"
 #define ALL_WHITE_TEXT "%^%v"
@@ -17,7 +18,8 @@ namespace util {
     extern std::string plainTimeStamp();
     extern std::map<std::string, std::string> timeStamp();
     extern std::string replaceAll(std::string str, const std::string& from, const std::string& to);
-    extern std::map<std::wstring, std::wstring> getEnvironmentVars();
+    extern std::map<std::wstring, std::wstring> getGitEnvironmentVars();
+    extern std::vector<std::variant<std::string,std::wstring>> getEnvironmentVars();
     template<typename Callable>
     std::string takeConsoleInput(Callable logMessage){
         std::invoke(logMessage);
