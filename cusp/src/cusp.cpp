@@ -9,6 +9,7 @@ bool cusp::premake_precondition(){
     for(const auto& p : paths)
         if(std::get_if<std::string>(&p))
             if(std::filesystem::exists(std::get<std::string>(p)+"/premake5")){
+                
                 premakeExist = true;
                 break;
             }
@@ -198,7 +199,7 @@ void cusp::cusp_update() {
     }
 }
 bool cusp::msBuildPreconditions(){
-    return util::getWinEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos;
+    return util::getGitEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos;
 }
 
 void cusp::generateVSCodeConfigurations(){

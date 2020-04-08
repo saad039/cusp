@@ -78,15 +78,10 @@ std::map<std::wstring, std::wstring> util::getGitEnvironmentVars() {
 
         name = pValue + value.length() + 1;
     }    
-#endif
-    return env;
-}
-
-std::string util::whereIs(const std::string& bin){
+#elif defined unix || __unix || __unix__
     std::string result;
-#if defined unix || __unix || __unix__
     std::array<char, 128> buffer;
-    const std::string cmd = std::string("whereis ")+bin;
+    const std::string cmd = std::string("whereis ");
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
     if (!pipe){
 #ifdef DEBUG
