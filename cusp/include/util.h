@@ -14,10 +14,8 @@
 extern std::shared_ptr<spdlog::logger> cuspLogger;
 
 namespace util {
-    extern std::vector<std::string> tokenizer(const std::string& str,const char delimeter);
     extern std::string plainTimeStamp();
     extern std::map<std::string, std::string> timeStamp();
-    extern std::string replaceAll(std::string str, const std::string& from, const std::string& to);
     extern std::map<std::wstring, std::wstring> getGitEnvironmentVars();
     extern std::vector<std::variant<std::string,std::wstring>> getEnvironmentVars();
     template<typename Callable>
@@ -33,7 +31,41 @@ namespace util {
         return std::invoke(condition,args...);
     }
 
-
+    template<typename str_t, typename char_t>
+    std::vector<str_t> tokenizer(const str_t& str, const char_t delimeter)
+    {
+        std::vector<str_t> tokens;
+        str_t temp;
+        temp.reserve(50);
+        const auto  len = str.length();
+        for (std::size_t i = 0, size = len; i < size; i++){
+            if (str[i] != delimeter)
+            {
+                temp += str[i];
+            }
+            else
+            {
+                if (len)
+                {
+                    tokens.push_back(temp);
+                    temp.clear();
+                    temp.reserve(50);
+                }
+            }
+        }
+        if (len)
+            tokens.push_back(temp);
+        return tokens;
+    }
+    template<typename str_t>
+    str_t replaceAll(str_t str, const str_t& from, const str_t& to) {
+        size_t start_pos = 0;
+        while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+            str.replace(start_pos, from.length(), to);
+            start_pos += to.length();
+        }
+        return str;
+    }
 } // namespace util
 
 

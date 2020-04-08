@@ -4,15 +4,26 @@
 
 bool cusp::premake_precondition(){
     bool premakeExist = false;
-#ifdef UNIX_CUSP
     auto paths = util::getEnvironmentVars();
-    for(const auto& p : paths)
-        if(std::get_if<std::string>(&p))
-            if(std::filesystem::exists(util::replaceAll(std::get<std::string>(p),"\n","")+"/premake5")){
+#ifdef UNIX_CUSP
+    const std::string exe = "/premake5";
+    const std::string from = "\n";
+    const std::string to = "";
+    using str_t = std::string;
+#elif defined WIN_CUSP
+    const std::wstring exe = L"/premake5.exe";
+    const std::wstring from = L"\n";
+    const std::wstring to = L"";
+    using str_t = std::wstring;
+#else 
+#error This operating system is not supported
+#endif
+    for (const auto& p : paths)
+        if (std::get_if<str_t>(&p))
+            if (std::filesystem::exists(util::replaceAll(std::get<str_t>(p), from, to) + exe)){
                 premakeExist = true;
                 break;
             }
-#endif
     return premakeExist;
 }
 

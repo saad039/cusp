@@ -1,9 +1,9 @@
 #ifndef _CUSP_H_
 #define _CUSP_H_
 #if defined _WIN32 || _WIN64
-constexpr auto premakePath = "C://premake//premake5.exe";
+#define WIN_CUSP
 #elif defined __APPLE__ || __MACH__
-constexpr auto premakePath = R("/bin/premake5");
+#define UNIX_CUSP
 #elif defined unix || __unix || __unix__
 #define UNIX_CUSP
 #endif

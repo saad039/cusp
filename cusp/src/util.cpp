@@ -2,32 +2,7 @@
 #include "util.h"
 #include<array>
 #include<cstdlib>
-std::vector<std::string> util::tokenizer(const std::string &str, const char delimeter)
-{
-    std::vector<std::string> tokens;
-    std::string temp;
-    temp.reserve(50);
-    const std::size_t len = str.length();
-    for (std::size_t i = 0, size = len; i < size; i++)
-    {
-        if (str[i] != delimeter)
-        {
-            temp += str[i];
-        }
-        else
-        {
-            if (len)
-            {
-                tokens.push_back(temp);
-                temp.clear();
-                temp.reserve(50);
-            }
-        }
-    }
-    if (len)
-        tokens.push_back(temp);
-    return tokens;
-}
+
 
 std::string util::plainTimeStamp()
 {
@@ -49,14 +24,7 @@ std::map<std::string, std::string> util::timeStamp()
     return timestamp;
 }
 
-std::string util::replaceAll(std::string str, const std::string& from, const std::string& to) {
-    size_t start_pos = 0;
-    while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-    }
-    return str;
-}
+
 
 std::map<std::wstring, std::wstring> util::getGitEnvironmentVars() {
      std::map<std::wstring, std::wstring> env;
@@ -105,22 +73,22 @@ std::vector<std::variant<std::string,std::wstring>>  util::getEnvironmentVars() 
      std::vector<std::variant<std::string,std::wstring>>  env;
 #if defined _WIN32 || _WIN64
     auto free = [](wchar_t* p) { FreeEnvironmentStrings(p); };
-
+    std::map<std::wstring, std::wstring> map;
     auto env_block = std::unique_ptr<wchar_t, decltype(free)>{
         GetEnvironmentStringsW(), free };
 
-    for (const wchar_t* name = env_block.get(); *name != L'\0'; )
-    {
-        const wchar_t* equal = wcschr(name, L'=');
+	for(const wchar_t* name = env_block.get(); *name != L'\0'; ) {
+		const wchar_t* equal = wcschr(name, L'=');
         std::wstring key(name, equal - name);
-
-        const wchar_t* pValue = equal + 1;
-        std::wstring value(pValue);
-
-        env[key] = value;
-
-        name = pValue + value.length() + 1;
-    }
+		const wchar_t* pValue = equal + 1;
+		std::wstring value(pValue);
+        map[key] = value;
+		//env.push_back(value);
+		name = pValue + value.length() + 1;
+	}
+    auto tokens = util::tokenizer(map[L"Path"], L';');
+    for (auto& t : tokens)
+        env.push_back(std::move(t));
 #elif defined unix || __unix || __unix__
 #include<cstdlib>
     std::array<char, 128> buffer;
