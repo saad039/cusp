@@ -220,19 +220,19 @@ void cusp::cusp_help(const std::vector<std::string>& commands){
 
         {"update","Regenerates premake5.lua for all projects and solution. This should be used if changes were made to cusp.json manually. Note that any changes made to premake5.lua files manually will be lost."},
 
-         {"make", "Generates makefiles for all projects and solution."},
+        {"make", "Generates makefiles for all projects and solution."},
 
-         {"vs2015", "Generates visual studio 2015 solution files for all projects and solution"},
+        {"vs2015", "Generates visual studio 2015 solution files for all projects and solution"},
 
-         {"vs2017", "Generates visual studio 2017 solution files for all projects and solution."},
+        {"vs2017", "Generates visual studio 2017 solution files for all projects and solution."},
 
-         {"vs2019", "Generates visual studio 2019 solution files for all projects and solution."},
+        {"vs2019", "Generates visual studio 2019 solution files for all projects and solution."},
 
-         {"xcode", "Generates xcode solution files for all projects and solution."},
+        {"xcode", "Generates xcode solution files for all projects and solution."},
 
-         {"build", "Specify the build type for binaries from makefiles only.\ncusp build debug -- for debug binaries\ncusp build release -- for release binaries."},
+        {"build", "Specify the build type for binaries from makefiles only.\ncusp build debug -- for debug binaries\ncusp build release -- for release binaries."},
 
-         {"-h", "Displays all available commands. Type cusp -h [command name] for information on a specific command."}
+        {"-h", "Displays all available commands. Type cusp -h [command name] for information on a specific command."}
     };
 
     if (commands.size() > 2){
