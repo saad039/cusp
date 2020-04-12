@@ -212,6 +212,42 @@ bool cusp::msBuildPreconditions(){
     return util::getGitEnvironmentVars()[L"Path"].find(L"MSBuild") != std::string::npos;
 }
 
+void cusp::cusp_help(const std::vector<std::string>& commands){
+    std::map<std::string, std::string> all_commands = {
+        {"init", "Creates a new solution in the present working directory."},
+
+        {"add", "Takes projectName as first argument and adds the following, as specified, to project projectName under your solution directory:\nhead.h/head.hpp \nsrc.cc/src.cpp \nclass className \n\nFor example, to add class Bar under project Foo, type: cusp add Foo Bar."},
+
+        {"update","Regenerates premake5.lua for all projects and solution. This should be used if changes were made to cusp.json manually. Note that any changes made to premake5.lua files manually will be lost."},
+
+         {"make", "Generates makefiles for all projects and solution."},
+
+         {"vs2015", "Generates visual studio 2015 solution files for all projects and solution"},
+
+         {"vs2017", "Generates visual studio 2017 solution files for all projects and solution."},
+
+         {"vs2019", "Generates visual studio 2019 solution files for all projects and solution."},
+
+         {"xcode", "Generates xcode solution files for all projects and solution."},
+
+         {"build", "Specify the build type for binaries from makefiles only.\ncusp build debug -- for debug binaries\ncusp build release -- for release binaries."},
+
+         {"-h", "Displays all available commands. Type cusp -h [command name] for information on a specific command."}
+    };
+
+    if (commands.size() > 2){
+        if (all_commands.find(commands[2]) != all_commands.end())
+            std::cout<<all_commands[commands[2]]<<std::endl;
+        else
+            std::cout<<"Command does not exist. Enter cusp -h to get a list of all available commands.\n";
+    }
+    else{
+        std::cout<<"All available commands.\n";
+        for (auto command: all_commands)
+            std::cout<<command.first<<std::endl;
+    }
+}
+
 void cusp::generateVSCodeConfigurations(){
   
     if (cusp::IDEPreconditions()) {
