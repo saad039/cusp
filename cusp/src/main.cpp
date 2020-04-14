@@ -39,6 +39,9 @@ int main(int argc, char const *argv[]){
          else if (arg == "vscode") {
              cusp::generateVSCodeConfigurations();
          }
+         else if (arg == "-h"){
+            cusp::cusp_help(commands);
+         }
          else{
              __SET_PATTERN_COL__;
              LOG_ERROR("cusp -h for more information\n");
