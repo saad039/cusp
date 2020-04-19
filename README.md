@@ -62,8 +62,8 @@ Make sure that you set the default spdlog's eol in ```cusp/dependencies/spdlog/i
 |cusp update | Regenerates premake5.lua for all projects and solution. This should be used if changes were made to ```cusp.json``` manually. Note that any changes made to ```premake5.lua``` files manually will be lost. |
 |cusp make | Generates makefiles for all projects and solution. |
 |cusp vs2015|Generates visual studio 2015 solution files for all projects and solution. |
-|cusp vs2017|Generates visual studio 2015 solution files for all projects and solution. |
-|cusp vs2019|Generates visual studio 2015 solution files for all projects and solution. |
+|cusp vs2017|Generates visual studio 2017 solution files for all projects and solution. |
+|cusp vs2019|Generates visual studio 2019 solution files for all projects and solution. |
 |cusp xcode|Generates xcode solution files for all projects and solution. |
 |cusp build debug |Generates debug binaries from makefiles only.|
 |cusp build release |Generates release binaries from makefiles only.|
