@@ -71,5 +71,5 @@ Make sure that you set the default spdlog's eol in ```cusp/dependencies/spdlog/i
 
 > This is a hobby project of mine. If you find any bug  or want to contribute, please open a pull request.
 
-You can email me on msaadahmed039@gmail.com
+You can email me at msaadahmed039@gmail.com
 
