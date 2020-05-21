@@ -214,11 +214,11 @@ bool cusp::msBuildPreconditions(){
 
 void cusp::cusp_help(const std::vector<std::string>& commands){
     std::map<std::string, std::string> all_commands = {
-        {"init", "Creates a new solution in the present working directory."},
+        {"init", "Creates a new solution in the current working directory."},
 
         {"add", "Takes projectName as first argument and adds the following, as specified, to project projectName under your solution directory:\nhead.h/head.hpp \nsrc.cc/src.cpp \nclass className \n\nFor example, to add class Bar under project Foo, type: cusp add Foo Bar."},
 
-        {"update","Regenerates premake5.lua for all projects and solution. This should be used if changes were made to cusp.json manually. Note that any changes made to premake5.lua files manually will be lost."},
+         {"update","Regenerates premake5.lua for all projects and solution. This should be used if changes were made to cusp.json manually. Note that any changes made to premake5.lua files manually by you will be lost."},
 
         {"make", "Generates makefiles for all projects and solution."},
 
@@ -242,8 +242,9 @@ void cusp::cusp_help(const std::vector<std::string>& commands){
             std::cout<<"Command does not exist. Enter cusp -h to get a list of all available commands.\n";
     }
     else{
-        std::cout<<"All available commands.\n";
-        for (auto command: all_commands)
+        std::cout << "Format: cusp -h [command]" << std::endl;
+        std::cout<<"All available commands are.\n";
+        for (const auto& command: all_commands)
             std::cout<<command.first<<std::endl;
     }
 }

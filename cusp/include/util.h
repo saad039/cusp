@@ -37,15 +37,14 @@ namespace util {
         std::vector<str_t> tokens;
         str_t temp;
         temp.reserve(50);
-        const auto  len = str.length();
-        for (std::size_t i = 0, size = len; i < size; i++){
+        for (std::size_t i = 0, size = str.length(); i < size; i++){
             if (str[i] != delimeter)
             {
                 temp += str[i];
             }
             else
             {
-                if (len)
+                if (!temp.empty())
                 {
                     tokens.push_back(temp);
                     temp.clear();
@@ -53,7 +52,7 @@ namespace util {
                 }
             }
         }
-        if (len)
+        if (!temp.empty())
             tokens.push_back(temp);
         return tokens;
     }
