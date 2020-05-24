@@ -49,7 +49,7 @@ std::map<std::wstring, std::wstring> util::getGitEnvironmentVars() {
 #elif defined unix || __unix || __unix__
     std::string result;
     std::array<char, 128> buffer;
-    const std::string cmd = std::string("whereis ");
+    const std::string cmd = std::string("whereis git");
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
     if (!pipe){
 #ifdef DEBUG
@@ -65,6 +65,8 @@ std::map<std::wstring, std::wstring> util::getGitEnvironmentVars() {
     for (int i=1; i <tokens.size();i++)
         result += tokens[i];
 #endif
+    if(result.length()> 10)
+        env[L"Path"] = L"Git";
     return env;
 }
 
