@@ -267,60 +267,70 @@ std::vector<std::string> inputHandler::libsTolinks()
     return libs;
 }
 
-bool inputHandler::HeaderFileName(const std::string &project,const std::string& header)
+bool inputHandler::HeaderFileName(const std::string &project, const std::string &header)
 {
-     static const std::string headreg = "([a-zA-Z0-9\\_\\(\\):])+(.h|.hpp)$";
-     if(std::regex_match(header,std::regex(headreg))){
-          if (!std::filesystem::exists(project + "/include/" + header)){
-              return true;
-          }
-          else{
-              __SET_PATTERN_COL__;
-              LOG_ERROR("File already exists\n");
-              return false;
-          }      
-     }
-     else{
-         __SET_PATTERN_COL__;
-         LOG_ERROR("Invalid File Name\n");
-         return false;
-     }
-}
-
-bool inputHandler::SourceFileName(const std::string &project,const std::string& srcFile)
-{
-   static const std::string srcreg = "([a-zA-Z0-9\\_\\(\\):])+(.cpp|.cc)$";
-   if(std::regex_match(srcFile,std::regex(srcreg))){
-        if (!std::filesystem::exists(project + "/src/" + srcFile)){
-              return true;
+    static const std::string headreg = "([a-zA-Z0-9\\_\\(\\):])+(.h|.hpp)$";
+    if (std::regex_match(header, std::regex(headreg)))
+    {
+        if (!std::filesystem::exists(project + "/include/" + header))
+        {
+            return true;
         }
-        else{
+        else
+        {
             __SET_PATTERN_COL__;
             LOG_ERROR("File already exists\n");
             return false;
-        }         
-   }
-   else{
-       __SET_PATTERN_COL__;
-       LOG_ERROR("Invalid File Name\n");
-       return false;
-   }
+        }
+    }
+    else
+    {
+        __SET_PATTERN_COL__;
+        LOG_ERROR("Invalid File Name\n");
+        return false;
+    }
 }
 
-bool inputHandler::ClassName(const std::string &project, const std::string& className)
+bool inputHandler::SourceFileName(const std::string &project, const std::string &srcFile)
 {
-    
-    auto cHeader =  className + ".h";
-    auto cSrc    =  className + ".cpp";
-    if(inputHandler::HeaderFileName(project,cHeader) && inputHandler::SourceFileName(project,cSrc))
+    static const std::string srcreg = "([a-zA-Z0-9\\_\\(\\):])+(.cpp|.cc)$";
+    if (std::regex_match(srcFile, std::regex(srcreg)))
+    {
+        if (!std::filesystem::exists(project + "/src/" + srcFile))
+        {
+            return true;
+        }
+        else
+        {
+            __SET_PATTERN_COL__;
+            LOG_ERROR("File already exists\n");
+            return false;
+        }
+    }
+    else
+    {
+        __SET_PATTERN_COL__;
+        LOG_ERROR("Invalid File Name\n");
+        return false;
+    }
+}
+
+bool inputHandler::ClassName(const std::string &project, const std::string &className)
+{
+
+    auto cHeader = className + ".h";
+    auto cSrc = className + ".cpp";
+    if (inputHandler::HeaderFileName(project, cHeader) && inputHandler::SourceFileName(project, cSrc))
         return true;
     else
         return false;
 }
 
-bool  inputHandler::initializeGitRepository() {
+bool inputHandler::initializeGitRepository()
+{
     char choice;
-    do {
+    do
+    {
         __SET_PATTERN_BW__;
         LOG_INFO("Initialise git repository?(Y/N): ");
         std::cin >> choice;
