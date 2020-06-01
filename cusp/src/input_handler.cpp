@@ -276,13 +276,13 @@ bool inputHandler::HeaderFileName(const std::string &project,const std::string& 
           }
           else{
               __SET_PATTERN_COL__;
-              LOG_ERROR("File already exists");
+              LOG_ERROR("File already exists\n");
               return false;
           }      
      }
      else{
          __SET_PATTERN_COL__;
-         LOG_ERROR("Invalid File Name");
+         LOG_ERROR("Invalid File Name\n");
          return false;
      }
 }

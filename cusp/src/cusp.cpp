@@ -82,17 +82,19 @@ void cusp::cusp_add_project(Solution& workspace){
 }
  
 void cusp::cusp_add_header_file(Solution& workspace, const std::string& project,const std::string& name){
-    if(inputHandler::HeaderFileName(project,name))
+    if(inputHandler::HeaderFileName(project,name)){
         workspace.addHeader(project,name);
         __SET_PATTERN_COL__;
         LOG_INFO(name+" added\n");
+    }
 }
 
 void cusp::cusp_add_source_file(Solution& workspace, const std::string& project, const std::string& name){
-    if(inputHandler::SourceFileName(project,name))
+    if(inputHandler::SourceFileName(project,name)){
         workspace.addSourceFile(project,name);
-    __SET_PATTERN_COL__;
-    LOG_INFO(name+" added\n");
+        __SET_PATTERN_COL__;
+        LOG_INFO(name+" added\n");
+    }
 }
 void cusp::cusp_add_class(Solution& workspace, const std::string& project, const std::string& name){
     if(inputHandler::ClassName(project,name))
@@ -163,28 +165,31 @@ void cusp::cusp_generate_sln_files(const std::string& ide) {
     }
 }
 
-void cusp::cusp_build_project(const std::vector<std::string>& conf) {
+void cusp::cusp_build_project(const std::vector<std::string> &conf)
+{
     Solution workspace;
     workspace.deserializeCuspDotJson();
-    if (buildPreconditions(workspace.getSolutionName())) {
-        if (conf.size()>2){
-            if (conf[2] == "debug" || conf[2] == "release") {
+    if (buildPreconditions(workspace.getSolutionName()))
+    {
+        if (conf.size() > 2 && (conf[2] == "debug" || conf[2] == "release"))
+        {
 #if defined _WIN32 || _WIN64
-                std::string config = conf[2]=="debug" ? "Debug" : "Release";
-                std::string cmd = "msbuild -property:Configuration=" + config;
+            std::string config = conf[2] == "debug" ? "Debug" : "Release";
+            std::string cmd = "msbuild -property:Configuration=" + config;
 #elif defined unix || __unix || __unix__
-                std::string cmd = "make config=" + conf[2];
+            std::string cmd = "make config=" + conf[2];
 #endif
-                std::system(cmd.c_str());
-            }
+            std::system(cmd.c_str());
         }
-        else {
+        else
+        {
             __SET_PATTERN_COL__;
             LOG_ERROR("Invalid build configuration\n");
             EXIT_EXECUTION;
         }
     }
-    else {
+    else
+    {
         __SET_PATTERN_COL__;
 #if defined _WIN32 || _WIN64
         LOG_ERROR("MSbuild or sln file does not exist\n");
@@ -216,21 +221,23 @@ void cusp::cusp_help(const std::vector<std::string>& commands){
     std::map<std::string, std::string> all_commands = {
         {"init", "Creates a new solution in the current working directory."},
 
-        {"add", "Takes projectName as first argument and adds the following, as specified, to project projectName under your solution directory:\nhead.h/head.hpp \nsrc.cc/src.cpp \nclass className \n\nFor example, to add class Bar under project Foo, type: cusp add Foo Bar."},
+        {"add", "cusp add project adds a new project under your solution. cusp add $project_name src/header file.{cc,cpp,h,hpp} adds source file.\nUsage:\t\tcusp add testProject header util.h"},
 
-         {"update","Regenerates premake5.lua for all projects and solution. This should be used if changes were made to cusp.json manually. Note that any changes made to premake5.lua files manually by you will be lost."},
+        {"update","Regenerates premake5.lua for all projects and solution. This should be used if changes were made to Cusp.json manually. Note that any changes made to premake5.lua files manually by you will be lost."},
 
         {"make", "Generates makefiles for all projects and solution."},
 
-        {"vs2015", "Generates visual studio 2015 solution files for all projects and solution"},
+        {"vs2015", "Generates visual studio 2015 solution files."},
 
-        {"vs2017", "Generates visual studio 2017 solution files for all projects and solution."},
+        {"vs2017", "Generates visual studio 2017 solution files."},
 
-        {"vs2019", "Generates visual studio 2019 solution files for all projects and solution."},
+        {"vs2019", "Generates visual studio 2019 solution files."},
+        
+        {"vscode", "Generates tasks.json file for vscode. Press Ctrl+Shift+p inside vscode to select default build configuration."},
 
-        {"xcode", "Generates xcode solution files for all projects and solution."},
+        {"xcode", "Generates xcode solution files."},
 
-        {"build", "Specify the build type for binaries from makefiles only.\ncusp build debug -- for debug binaries\ncusp build release -- for release binaries."},
+        {"build", "Specify the build type for binaries from makefiles only.\ncusp build debug -- for debug binaries\ncusp build release -- for release binaries. Note that cusp will use MSBuild to build the project if you are using Microsoft C++ Compiler"},
 
         {"-h", "Displays all available commands. Type cusp -h [command name] for information on a specific command."}
     };
@@ -306,7 +313,6 @@ std::vector<nlohmann::json> cusp::getTasksJson(const std::string& buildSys) {
     tasks.push_back(cusp::getTask("Release", "", buildSys+" config=release"));
 #endif
         return tasks;
-
 }
 nlohmann::json cusp::getTask(const std::string& label,const std::string& command, const std::string& buildSys)
 {
