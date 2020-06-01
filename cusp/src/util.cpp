@@ -63,9 +63,9 @@ std::map<std::wstring, std::wstring> util::getGitEnvironmentVars()
     result.clear();
     for (int i = 1; i < tokens.size(); i++)
         result += tokens[i];
-#endif
     if (result.length() > 10)
         env[L"Path"] = L"Git";
+#endif
     return env;
 }
 
