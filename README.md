@@ -57,14 +57,15 @@ Clone the repository to a local destination and make sure to fetch all dependenc
 | cusp add ```projectName``` header ```head.h or head.hpp``` | Adds head.h/hpp header file into the project projectName under your solution directory. |
 | cusp add ```projectName``` src ```src.cc or src.cpp``` | Adds src.cc/cpp source file into the project projectName under your solution directory. |
 | cusp add ```projectName``` class ```className``` | Adds className.h and className.cpp header and source files into the project projectName under your solution directory. |
-|cusp update | Regenerates premake5.lua for all projects and solution. This should be used if changes were made to ```cusp.json``` manually. Note that any changes made to ```premake5.lua``` files manually will be lost. |
+|cusp update | Regenerates premake5.lua for all projects and solutions. This should be used if changes were made to ```cusp.json``` manually. Note that any changes made to ```premake5.lua``` files manually will be lost. |
 |cusp make | Generates makefiles for all projects and solution. |
-|cusp vs2015|Generates visual studio 2015 solution files for all projects and solution. |
-|cusp vs2017|Generates visual studio 2017 solution files for all projects and solution. |
-|cusp vs2019|Generates visual studio 2019 solution files for all projects and solution. |
+|cusp vs2015|Generates visual studio 2015 solution files. |
+|cusp vs2017|Generates visual studio 2017 solution files. |
+|cusp vs2019|Generates visual studio 2019 solution files. |
+|cusp vscode|Generates tasks.json file for vscode. Press Ctrl+Shift+p inside vscode to select default build configuration. |
 |cusp xcode|Generates xcode solution files for all projects and solution. |
-|cusp build debug |Generates debug binaries from makefiles only.|
-|cusp build release |Generates release binaries from makefiles only.|
+|cusp build debug |Generates debug binaries from both makefiles and sln files. Note that cusp will use MSBuild to build the project if you are using Microsoft C++ Compiler|
+|cusp build release |Generates release binaries from both makefiles and sln files. Note that cusp will use MSBuild to build the project if you are using Microsoft C++ Compiler|
 
 
 > This is a hobby project of mine. If you find any bug  or want to contribute, please open a pull request.

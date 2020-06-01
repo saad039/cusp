@@ -252,7 +252,7 @@ void cusp::cusp_help(const std::vector<std::string> &commands)
     std::map<std::string, std::string> all_commands = {
         {"init", "Creates a new solution in the current working directory."},
 
-        {"add", "cusp add project adds a new project under your solution. cusp add $project_name src/header file.{cc,cpp,h,hpp} adds source file.\nUsage:\t\tcusp add testProject header util.h"},
+        {"add", "cusp add project adds a new project under your solution. cusp add $project_name src/header file.{cc,cpp,h,hpp} adds source file.\nUsage:\t\tcusp add testProject header util.h\nTo add a class, use cusp add testProject class widget"},
 
         {"update", "Regenerates premake5.lua for all projects and solution. This should be used if changes were made to Cusp.json manually. Note that any changes made to premake5.lua files manually by you will be lost."},
 
@@ -268,7 +268,7 @@ void cusp::cusp_help(const std::vector<std::string> &commands)
 
         {"xcode", "Generates xcode solution files."},
 
-        {"build", "Specify the build type for binaries from makefiles only.\ncusp build debug -- for debug binaries\ncusp build release -- for release binaries. Note that cusp will use MSBuild to build the project if you are using Microsoft C++ Compiler"},
+        {"build", "Specify the build type for binaries from makefiles only.\ncusp build debug -- for debug binaries\ncusp build release -- for release binaries. Note that cusp will use MSBuild to build the project if you are using Microsoft C++ Compiler."},
 
         {"-h", "Displays all available commands. Type cusp -h [command name] for information on a specific command."}};
 
