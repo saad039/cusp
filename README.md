@@ -22,10 +22,8 @@ _A simple and easy to use command line build tool for C++ based on premake_
 
 Clone the repository to a local destination and make sure to fetch all dependencies.
 
-> ```git clone --recursive https://github.com/saad039/cusp```
+> ```git clone https://github.com/saad039/cusp```
 
-Make sure that you set the default spdlog's eol in ```cusp/dependencies/spdlog/include/spdlog/tweakme.h``` from ```#define SPDLOG_EOL ";-)\n"``` to ```#define SPDLOG_EOL ""```
-  
   
 
 ## For Linux
