@@ -131,9 +131,8 @@ std::vector<std::string> cuspParser::getProjectsToLinkTo(const Project& project)
 	std::vector<std::string> projectsToLink;
 
 	std::for_each(std::begin(project.Libs()), std::end(project.Libs()),
-
 		[&](const std::string& lib) {
-			if (std::find(std::begin(names), std::end(names), lib) != std::end(names))
+			// if (std::find(std::begin(names), std::end(names), lib) != std::end(names))
 				projectsToLink.push_back(lib);
 		}
 	);
