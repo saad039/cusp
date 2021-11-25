@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18.1)
 
-project(cusp)
+project(cusp VERSION 1.0.0 LANGUAGES CXX)
 
 add_subdirectory(json)
 add_subdirectory(ordered-map)
@@ -34,5 +34,9 @@ target_precompile_headers(cusp
     [["util.h"]]
 )
 
+target_link_libraries(spdlog PRIVATE pthread)
 
-target_link_libraries(cusp spdlog_header_only ordered_map nlohmann_json pthread)
+target_link_libraries(cusp 
+                      PRIVATE spdlog  
+                      PRIVATE ordered_map 
+                      PRIVATE nlohmann_json)
